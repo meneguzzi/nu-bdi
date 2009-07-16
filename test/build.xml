@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Jul 14, 2009 11:04:32 AM                                                        
+
+     nu-BDI tests    
+     Tests for nu-BDI
+                   
+     meneguzzi                                                                
+     ====================================================================== -->
+<project name="nu-BDI tests" default="run-tests">
+	<description>
+            Tests for nu-BDI
+    </description>
+
+	<property name="build.dir" value="${basedir}/../bin" />
+	<property name="nuBDIJar" value="${basedir}/../lib/nuBDI.jar" />
+
+	<property name="jasonCSPJar" value="${basedir}/../lib/jason-csp.jar" />
+	<property name="jasonJar" value="${basedir}/../lib/jason.jar" />
+	<property name="jasonEnvJar" value="${basedir}/../lib/jasonenv.jar" />
+	<property name="creamJar" value="${basedir}/../lib/cream106.jar" />
+
+	<path id="project.classpath">
+		<pathelement path="${nuBDIJar}" />
+		<pathelement path="${jasonJar}" />
+		<pathelement path="${creamJar}" />
+		<pathelement path="${jasonEnvJar}" />
+		<pathelement path="${build.dir}" />
+	</path>
+
+	<!-- ================================= 
+          target: run-tests              
+         ================================= -->
+	<target name="run-tests" depends="init" description="Tests for nu-BDI">
+		<java>
+		</java>
+	</target>
+
+	<!-- ================================= 
+          target: run-mas              
+         ================================= -->
+	<target name="run-mas" depends="init" description="Runs the test MAS for nu-BDI">
+		<property name="project.file" value="Annotation.mas2j" />
+		<java dir="." classname="jason.infra.centralised.RunCentralisedMAS" failonerror="true" fork="yes">
+			<classpath refid="project.classpath" />
+			<jvmarg line="-Djava.library.path='${library.path}'" />
+			<arg line="${project.file} ${debug}" />
+		</java>
+	</target>
+
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: init                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="init">
+	</target>
+
+</project>
