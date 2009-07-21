@@ -5,6 +5,8 @@ package edu.meneguzzi.nubdi.action;
 
 import java.util.logging.Logger;
 
+import edu.meneguzzi.nubdi.agent.nu.NuAgent;
+
 import jason.asSemantics.Agent;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -32,8 +34,13 @@ public class AddNorm extends DefaultInternalAction {
 			throws Exception {
 		
 		logger.info("Adding "+ args[0]);
-		
-		return true;
+		Agent ag = ts.getAg();
+		if(ag instanceof NuAgent) {
+			NuAgent nuAgent = (NuAgent) ag;
+			return nuAgent.addAbstractNorm(args[0]);
+		} else {
+			throw new Exception("Agent executing action is not a normative agent");
+		}
 	}
 
 }

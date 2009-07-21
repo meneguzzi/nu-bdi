@@ -16,6 +16,6 @@ event(a(B),c(DS)).
 	   
 	   
 	   
-+norm(Type,Norm,Constraint,Activation,Expiration,Identifier) : true
++norm(Type,Norm,Constraint,Activation,Expiration,Identifier) [source(S)]: true
 	<- edu.meneguzzi.nubdi.action.AddNorm(norm(Type,Norm,Constraint,Activation,Expiration,Identifier));
 	   .puts("Added norm #{Type} - #{Norm} - #{Constraint} - #{Activation} - #{Expiration} - #{Identifier}").

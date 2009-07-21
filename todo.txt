@@ -1,0 +1,10 @@
+Things to do for this project:
+
+- Decide when/how the norm update should take place:
+  * Through the belief revision function, all at once?
+  * Through an AgentSpeak level action allowing plans to decide when to ignore
+    norms
+  
+- Decide when/how to resolve norm conflicts
+  * At instantiation
+  * At norm addition 

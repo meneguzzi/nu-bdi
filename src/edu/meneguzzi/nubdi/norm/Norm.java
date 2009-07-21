@@ -3,7 +3,10 @@
  */
 package edu.meneguzzi.nubdi.norm;
 
+import java.util.Iterator;
+
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Literal;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Term;
 import edu.meneguzzi.nubdi.agent.nu.NuAgent;
@@ -60,13 +63,17 @@ public interface Norm {
 	public boolean isActivated();
 	
 	/**
-	 * Return whether or not the supplied agent's beliefs 
-	 * support the activation condition.
+	 * Return whether or not the supplied agent's beliefs  support the 
+	 * activation condition, and if so, returns an iterator to all the 
+	 * unifiers. For a norm to yield a correct unifier, it must make the norm
+	 * ground.
+	 * 
+	 * TODO check the details of how this activation must be.
 	 * 
 	 * @param agent
 	 * @return
 	 */
-	public boolean supportsActivation(NuAgent agent);
+	public Iterator<Unifier> supportsActivation(NuAgent agent);
 	
 	/**
 	 * Returns whether or not the supplied agent's beliefs
@@ -96,4 +103,23 @@ public interface Norm {
 	 * @return
 	 */
 	public Unifier getUnifier();
+	
+	/**
+	 * Returns whether or not this norm is in the scope of the supplied
+	 * {@link Literal}, for the specified <em>agentId</em> and <em>roleId</em>.
+	 * 
+	 * @param agentId
+	 * @param roleId
+	 * @param literal
+	 * @return
+	 */
+	public boolean inScope(String agentId, String roleId, Literal literal);
+	
+	/**
+	 * Returns whether or not this norm is in conflict with the supplied norm.
+	 * 
+	 * @param n
+	 * @return
+	 */
+	public boolean inConflict(Norm n);
 }

@@ -4,8 +4,13 @@
 package edu.meneguzzi.nubdi.norm;
 
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Literal;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Term;
+
+import java.util.Iterator;
+import java.util.logging.Logger;
+
 import edu.meneguzzi.nubdi.agent.nu.NuAgent;
 
 /**
@@ -155,9 +160,9 @@ public class NormImpl implements Norm {
 	 * @see edu.meneguzzi.nubdi.norm.Norm#supportsActivation(edu.meneguzzi.nubdi.agent.nu.NuAgent)
 	 */
 	@Override
-	public boolean supportsActivation(NuAgent agent) {
+	public Iterator<Unifier> supportsActivation(NuAgent agent) {
 		//TODO Make instances of each possible unifier for a certain norm?
-		return activationCondition.logicalConsequence(agent, unifier) != null;
+		return activationCondition.logicalConsequence(agent, unifier);
 	}
 
 	/* (non-Javadoc)
@@ -168,4 +173,27 @@ public class NormImpl implements Norm {
 		return expirationCondition.logicalConsequence(agent, unifier) != null;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.meneguzzi.nubdi.norm.Norm#inScope(java.lang.String, java.lang.String, jason.asSyntax.Literal)
+	 */
+	@Override
+	public boolean inScope(String agentId, String roleId, Literal literal) {
+		//First check if the norm unifier matches the supplied literal
+		literal = (Literal) literal.clone();
+		if(literal.apply(this.unifier)) {
+			//TODO double check this algorithm when the full implementation is done
+		}
+		
+		Logger.getAnonymousLogger().severe("inScope not yet implemented");
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.meneguzzi.nubdi.norm.Norm#inConflict(edu.meneguzzi.nubdi.norm.Norm)
+	 */
+	@Override
+	public boolean inConflict(Norm n) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
