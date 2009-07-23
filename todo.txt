@@ -23,6 +23,8 @@ Things to discuss in conference call with everyone:
     
 - Again about plan annotations
   * When we compose plan annotations (such as when we collect annotations in a plan)
+    should we check if the composition is itself satisfiable?
+    (Maybe we can detect other types of conflict
 
 - When is the best time to add the norms to an agent?
   * As an action in Plan Library space
