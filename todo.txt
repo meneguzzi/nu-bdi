@@ -1,5 +1,7 @@
 Things to do for this project:
 
+Things to discuss in conference call with everyone:
+
 - Decide when/how the norm update should take place:
   * Through the belief revision function, all at once?
   * Through an AgentSpeak level action allowing plans to decide when to ignore
@@ -8,3 +10,29 @@ Things to do for this project:
 - Decide when/how to resolve norm conflicts
   * At instantiation
   * At norm addition 
+
+- Should we force specific norms to be fully ground?
+  * Why yes and why no (discuss reasons for each)
+  
+- When/how should we annotate plans 
+  * at norm update and annotate with the restrictions from specific norms
+  * at norm update and annotate with the restrictions from abstract norms 
+    (we will need something to switch specific annotations on and off)
+  * at norm addition and annotate with the restrictions from abstract norms
+    (again, we have the issue of when to switch specific restrictions on and off)
+    
+- Again about plan annotations
+  * When we compose plan annotations (such as when we collect annotations in a plan)
+
+- When is the best time to add the norms to an agent?
+  * As an action in Plan Library space
+    (Advantages include being able to specify provenance acceptability in the 
+     agent language, e.g. if the norm comes from agent X, ignore it)
+  * As an addendum to the belief revision process in Java-space
+
+- Norm removal
+  * How should we do norm removal, do we even talk about it? 
+  * How this affects running intentions? 
+  * Should we keep abiding by the norm even after it has been removed
+
+  
