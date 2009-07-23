@@ -14,8 +14,6 @@ event(a(B),c(DS)).
 	   //.println(X) [Y];
 	   .puts("Annotation worked").
 	   
-	   
-	   
 +norm(Type,Norm,Constraint,Activation,Expiration,Identifier) [source(S)]: true
 	<- edu.meneguzzi.nubdi.action.AddNorm(norm(Type,Norm,Constraint,Activation,Expiration,Identifier));
 	   .puts("Added norm #{Type} - #{Norm} - #{Constraint} - #{Activation} - #{Expiration} - #{Identifier}").

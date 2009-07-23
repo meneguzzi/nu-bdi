@@ -11,5 +11,5 @@ MAS annotation {
          org.kcl.jason.env.scripted.ScriptedEnvironment("script.xml")//, "rover.act")
 
     agents: 
-         annotated;
+         annotated agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent;
 }

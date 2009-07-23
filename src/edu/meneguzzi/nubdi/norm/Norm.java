@@ -19,7 +19,7 @@ import edu.meneguzzi.nubdi.agent.nu.NuAgent;
  *
  */
 public interface Norm {
-	public enum NormType {obligation, expiration};
+	public enum NormType {obligation, prohibition};
 	
 	/**
 	 * Returns the type of this norm, either obligation or expiration.

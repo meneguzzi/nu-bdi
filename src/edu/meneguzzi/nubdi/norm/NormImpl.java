@@ -6,12 +6,14 @@ package edu.meneguzzi.nubdi.norm;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LogicalFormula;
+import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 
 import java.util.Iterator;
 import java.util.logging.Logger;
 
 import edu.meneguzzi.nubdi.agent.nu.NuAgent;
+import edu.meneguzzi.nubdi.exception.NuBDIException;
 
 /**
  * @author meneguzzi
@@ -43,8 +45,30 @@ public class NormImpl implements Norm {
 	 * Creates a norm from a term encoding it
 	 * @param norm
 	 */
-	public NormImpl(Term norm) {
-		
+	public NormImpl(Term norm) throws NuBDIException {
+		if(norm.isStructure()) {
+			Structure sNorm = (Structure)norm;
+			if(sNorm.getArity() < 6) {
+				throw new NuBDIException("Norms must have at least 6 parameters: norm(Type, Norm, Restriction, Activation, Expiration, Identifier, <Agent>, <Role>)");
+			}
+			this.normType = parseNormType(sNorm.getTerm(0).toString());
+			this.normTarget = sNorm.getTerm(1);
+			try {
+				this.normRestriction = (LogicalFormula) sNorm.getTerm(2);
+				this.activationCondition = (LogicalFormula) sNorm.getTerm(3);
+				this.expirationCondition = (LogicalFormula) sNorm.getTerm(4);
+			} catch (ClassCastException e) {
+				throw new NuBDIException("Norm restriction, and activation and expiration conditions must be logcal formulas", e);
+			}
+			this.normId = sNorm.getTerm(5).toString();
+			this.activated = false;
+			if(sNorm.getArity() > 6) {
+				this.targetAgent = sNorm.getTerm(6).toString();
+			}
+			if(sNorm.getArity() > 7) {
+				this.targetRole = sNorm.getTerm(7).toString();
+			}
+		}
 	}
 	
 	public NormImpl(NormType normType, String targetAgent, String targetRole, 
@@ -60,6 +84,22 @@ public class NormImpl implements Norm {
 		this.expirationCondition = (LogicalFormula) expirationCondition.clone();
 		this.normId = normId;
 		activated = false;
+	}
+	
+	/**
+	 * Parses a specific NormType
+	 * @param nType
+	 * @return
+	 * @throws NuBDIException
+	 */
+	public static NormType parseNormType(String nType) throws NuBDIException {
+		if(nType.toString().equals("obligation")) {
+			return NormType.obligation;
+		} else if(nType.toString().equals("prohibition")) {
+			return NormType.prohibition;
+		} else {
+			throw new NuBDIException("Invalid norm type (must be either obligation and prohibition): "+nType);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -13,8 +13,9 @@ import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefUpdateFunction;
 import edu.meneguzzi.nubdi.agent.nu.NuAgent;
 
 /**
- * @deprecated This class is no longer necessary since we are doing this
- * through an action.
+ * A decorator class that appends the normative processing code after executing 
+ * the belief revision from {@link DefaultBeliefUpdateFunction}. The function
+ * in agent corresponds to that of our paper at <a href="https://svn.xp-dev.com/svn/meneguzzi-collab-papers/trunk/norm-bdi-2009/norm-bdi-main.pdf">XP-Dev</a>.
  * @author meneguzzi
  *
  */
@@ -33,12 +34,7 @@ public class NuBeliefUpdateFunction implements BeliefUpdateFunction<NuAgent> {
 	public void updateBeliefs(NuAgent agent, List<Literal> percepts) {
 		//First we do the actual belief update
 		delegateBUF.updateBeliefs(agent, percepts);
-		//Then we add the (abstract) norms to the agent itself
-		for(Literal l : percepts) {
-			if(l.getFunctor().equals("norm")){
-				agent.addAbstractNorm(l);
-			}
-		}
+		agent.updateNorms();
 	}
 
 }
