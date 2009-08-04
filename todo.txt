@@ -7,15 +7,15 @@ Things to discuss in conference call with everyone:
   * Through an AgentSpeak level action allowing plans to decide when to ignore
     norms
   
-- Decide when/how to resolve norm conflicts
+- Decide when/how to resolve norm conflicts - Nir writing a paragraph on possible problematic case
   * At instantiation
   * At norm addition 
 
 - Should we force specific norms to be fully ground?
-  * Why yes and why no (discuss reasons for each)
+  * Why yes and why no (discuss reasons for each) - Not forcing is the key
   
 - When/how should we annotate plans 
-  * at norm update and annotate with the restrictions from specific norms
+  * at norm update and annotate with the restrictions from specific norms ****
   * at norm update and annotate with the restrictions from abstract norms 
     (we will need something to switch specific annotations on and off)
   * at norm addition and annotate with the restrictions from abstract norms
@@ -24,7 +24,7 @@ Things to discuss in conference call with everyone:
 - Again about plan annotations
   * When we compose plan annotations (such as when we collect annotations in a plan)
     should we check if the composition is itself satisfiable?
-    (Maybe we can detect other types of conflict
+    (Maybe we can detect other types of conflict)
 
 - When is the best time to add the norms to an agent?
   * As an action in Plan Library space
