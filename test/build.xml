@@ -32,8 +32,10 @@
           target: run-tests              
          ================================= -->
 	<target name="run-tests" depends="init" description="Tests for nu-BDI">
-		<java>
-		</java>
+		<junit>
+			<test>
+			</test>
+		</junit>
 	</target>
 
 	<!-- ================================= 

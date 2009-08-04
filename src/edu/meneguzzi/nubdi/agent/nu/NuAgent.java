@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import edu.meneguzzi.nubdi.agent.ModularAgent;
+import edu.meneguzzi.nubdi.agent.function.BeliefRevisionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultActionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefRevisionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefUpdateFunction;
@@ -20,6 +21,7 @@ import edu.meneguzzi.nubdi.agent.function.defaults.DefaultEventSelectionFunction
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultIntentionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultMessageSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultOptionSelectionFunction;
+import edu.meneguzzi.nubdi.agent.nu.function.NuBeliefUpdateFunction;
 import edu.meneguzzi.nubdi.exception.NuBDIException;
 import edu.meneguzzi.nubdi.norm.Norm;
 import edu.meneguzzi.nubdi.norm.NormImpl;
@@ -43,7 +45,7 @@ public class NuAgent extends ModularAgent {
 	public NuAgent() {
 		this.actionSelectionFunction = new DefaultActionSelectionFunction();
 		this.beliefRevisionFunction = new DefaultBeliefRevisionFunction();
-		this.beliefUpdateFunction = new DefaultBeliefUpdateFunction();
+		this.beliefUpdateFunction =  new NuBeliefUpdateFunction();
 		this.eventSelectionFunction = new DefaultEventSelectionFunction();
 		this.intentionSelectionFunction = new DefaultIntentionSelectionFunction();
 		this.messageSelectionFunction = new DefaultMessageSelectionFunction();
@@ -101,7 +103,8 @@ public class NuAgent extends ModularAgent {
 		
 		if(specificNorms.get(newNorm.getNormId()) == null) {
 			specificNorms.put(newNorm.getNormId(), newNorm);
-			this.annotatePlans();
+			//Should we annotate plans all over again at each cycle?
+			//this.annotatePlans();
 			return true;
 		} else {
 			logger.severe("Tried to add a specific norm that is already in the table of specific norms.");
@@ -147,20 +150,30 @@ public class NuAgent extends ModularAgent {
 	 */
 	public boolean updateNorms() {
 		//Add newly activated norms
+		logger.fine("Updating norms");
+		boolean normsChanged = false;
 		Iterator<Unifier> activated = null;
 		for(Norm abstractNorm : abstractNorms.values()) {
+			logger.fine("Checking norm: "+abstractNorm);
 			if((activated=abstractNorm.supportsActivation(this))!=null) {
+				//logger.info("Norm has been activated");
 				while(activated.hasNext()) {
 					Unifier un = activated.next();
+					logger.info("Norm has been activated with unifier "+un);
 					Norm specificNorm = abstractNorm.instantiateNorm(un);
 					//TODO review this algorithm
+					normsChanged |= this.addSpecificNorm(specificNorm);
 				}
 			}
 		}
 		for(Norm specificNorm : specificNorms.values()) {
 			if(specificNorm.supportsExpiration(this)) {
 				this.removeAbstractNorm(specificNorm.getNormId());
+				normsChanged |= true;
 			}
+		}
+		if(normsChanged) {
+			this.annotatePlans();
 		}
 		return true;
 	}

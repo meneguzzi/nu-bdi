@@ -4,10 +4,13 @@
 package edu.meneguzzi.nubdi.norm;
 
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LogicalFormula;
+import jason.asSyntax.StringTerm;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
+import jason.asSyntax.parser.ParseException;
 
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -54,10 +57,12 @@ public class NormImpl implements Norm {
 			this.normType = parseNormType(sNorm.getTerm(0).toString());
 			this.normTarget = sNorm.getTerm(1);
 			try {
-				this.normRestriction = (LogicalFormula) sNorm.getTerm(2);
-				this.activationCondition = (LogicalFormula) sNorm.getTerm(3);
-				this.expirationCondition = (LogicalFormula) sNorm.getTerm(4);
+				this.normRestriction = termToLogicalFormula(sNorm.getTerm(2));
+				this.activationCondition = termToLogicalFormula(sNorm.getTerm(3));
+				this.expirationCondition = termToLogicalFormula(sNorm.getTerm(4));
 			} catch (ClassCastException e) {
+				throw new NuBDIException("Norm restriction, and activation and expiration conditions must be logcal formulas", e);
+			} catch (ParseException e) {
 				throw new NuBDIException("Norm restriction, and activation and expiration conditions must be logcal formulas", e);
 			}
 			this.normId = sNorm.getTerm(5).toString();
@@ -68,6 +73,9 @@ public class NormImpl implements Norm {
 			if(sNorm.getArity() > 7) {
 				this.targetRole = sNorm.getTerm(7).toString();
 			}
+			this.unifier = new Unifier();
+		} else {
+			throw new NuBDIException("Norms must have at least 6 parameters: norm(Type, Norm, Restriction, Activation, Expiration, Identifier, <Agent>, <Role>)");
 		}
 	}
 	
@@ -84,6 +92,19 @@ public class NormImpl implements Norm {
 		this.expirationCondition = (LogicalFormula) expirationCondition.clone();
 		this.normId = normId;
 		activated = false;
+		this.unifier = new Unifier();
+	}
+	
+	public static LogicalFormula termToLogicalFormula(Term term) throws ParseException {
+		LogicalFormula formula = null;
+		if(term.isString()) {
+			StringTerm sTerm = (StringTerm) term;
+			formula = ASSyntax.parseFormula(sTerm.getString());
+		} else {
+			formula = ASSyntax.parseFormula(term.toString());
+		}
+		
+		return formula;
 	}
 	
 	/**
@@ -185,6 +206,7 @@ public class NormImpl implements Norm {
 		if(!expirationCondition.apply(unifier)) {
 			return false;
 		}
+		this.activated = true;
 		return true;
 	}
 
@@ -235,5 +257,38 @@ public class NormImpl implements Norm {
 	public boolean inConflict(Norm n) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("norm(");
+		switch (normType) {
+		case obligation:
+			builder.append("obligation");
+			break;
+		case prohibition:
+			builder.append("prohibition");
+			break;
+		default:
+			break;
+		}
+		builder.append(targetAgent);
+		builder.append(",");
+		builder.append(normTarget);
+		builder.append("*");
+		builder.append(normRestriction);
+		builder.append(",");
+		builder.append(activationCondition);
+		builder.append(",");
+		builder.append(expirationCondition);
+		builder.append(",");
+		builder.append(normId);
+		builder.append(").");
+		builder.append(unifier);
+		return builder.toString();
 	}
 }

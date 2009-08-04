@@ -7,6 +7,16 @@
 	<step time="1">
 		norm(obligation, evacuate(P,X,Y), "10&lt;=X &amp; X&lt;=40 &amp; 20&lt;=Y &amp; Y&lt;=80", "at_loc(P,X) &amp; unsafe(X) &amp; safe(Y)", emergency_level(X,low), 12).
 	</step>
+	<step time="3">
+		//at_loc(felipe,15).
+		//unsafe(30).
+		//safe(hills).
+	</step>
+		
+	<step time="7">
+		//emergency_level(15,low).
+	</step>
+	
 	<step time="10">
 		b.
 	</step>

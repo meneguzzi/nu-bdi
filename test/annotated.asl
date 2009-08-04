@@ -8,6 +8,10 @@ norm(obligation,
      12).
 event(a(B),c(DS)).
 
+at_loc(felipe,15).
+unsafe(15).
+safe(30).
+
 @plan[constraint(X>10)]
 +event(X,Y) : true
 	<- action(X) [constraint(X>10)];
