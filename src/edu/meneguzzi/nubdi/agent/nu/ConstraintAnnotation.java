@@ -3,6 +3,8 @@
  */
 package edu.meneguzzi.nubdi.agent.nu;
 
+import java.util.ArrayList;
+
 import edu.meneguzzi.csp.ConstraintSolver;
 import edu.meneguzzi.csp.ConstraintSolverException;
 import jason.asSemantics.Unifier;
@@ -17,6 +19,8 @@ import jason.asSyntax.parser.ParseException;
 public class ConstraintAnnotation {
 	
 	protected LogicalFormula constraint;
+	
+	protected ArrayList<LogicalFormula> constraints;
 	
 	/**
 	 * If we use the empty constructor, we create a true annotation
@@ -54,6 +58,21 @@ public class ConstraintAnnotation {
 		}
 		
 		return satisfiable;
+	}
+	
+	/**
+	 * Returns the satisfiability score for this constraint, this score is 
+	 * positive if the entire constraint is satisfiable and negative with
+	 * their absolute value equaling to the number of annotations (and 
+	 * consequently the number of norms) that need to be violated.
+	 * 
+	 * Right now this is not implemented.
+	 * 
+	 * @param unifier
+	 * @return
+	 */
+	public int scoreSatisfiability(Unifier unifier) {
+		return 1;
 	}
 	
 	/**

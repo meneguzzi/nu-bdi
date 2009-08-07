@@ -10,7 +10,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
+import jason.asSyntax.parser.ParseException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -82,11 +84,15 @@ public class NuAgentTest {
 			Norm norm = new NormImpl(obligation1);
 			//Then we try to find it among those norms
 			for(Norm n : nuAgent.getAbstractNorms()) {
-				if(n.getNormId() == norm.getNormId()) {
+				//And when we find the norm we are looking for
+				if(n.getNormId().equals(norm.getNormId())) {
+					//We try to instantiate it
 					Unifier un = new Unifier();
 					un.unifies(ASSyntax.parseTerm("activate(a,b)"), ASSyntax.parseTerm("activate(A,B)"));
 					Norm specificNorm = n.instantiateNorm(un);
+					//And add it as a specific norm
 					assertTrue(nuAgent.addSpecificNorm(specificNorm));
+					//Later confirming that is the norm we wanted
 					assertNotNull(nuAgent.getSpecificNorms().contains(specificNorm));
 				}
 			}
@@ -94,7 +100,7 @@ public class NuAgentTest {
 			assertTrue(nuAgent.addAbstractNorm(obligation2));
 			norm = new NormImpl(obligation2);
 			for(Norm n : nuAgent.getAbstractNorms()) {
-				if(n.getNormId() == norm.getNormId()) {
+				if(n.getNormId().equals(norm.getNormId())) {
 //					Unifier un = new Unifier();
 //					un.unifies(ASSyntax.parseTerm("activate(a,b)"), ASSyntax.parseTerm("activate(A,B)"));
 //					Norm specificNorm = n.instantiateNorm(un);
@@ -132,15 +138,50 @@ public class NuAgentTest {
 	 */
 	@Test
 	public void testRemoveSpecificNorm() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link edu.meneguzzi.nubdi.agent.nu.NuAgent#updateNorms()}.
-	 */
-	@Test
-	public void testUpdateNorms() {
-		fail("Not yet implemented");
+		//Very similar to the test to add a specific norm
+		try {
+			//First we add the abstract norm to the agent
+			assertTrue(nuAgent.addAbstractNorm(obligation1));
+			Norm norm = new NormImpl(obligation1);
+			Norm specificNorm = null;
+			//Then we try to find it among those norms
+			for(Norm n : nuAgent.getAbstractNorms()) {
+				//And when we find the norm we are looking for
+				if(n.getNormId().equals(norm.getNormId())) {
+					//We try to instantiate it
+					Unifier un = new Unifier();
+					un.unifies(ASSyntax.parseTerm("activate(a,b)"), ASSyntax.parseTerm("activate(A,B)"));
+					specificNorm = n.instantiateNorm(un);
+					assertNotNull(specificNorm);
+					//And add it as a specific norm
+					assertTrue(nuAgent.addSpecificNorm(specificNorm));
+					//Later confirming that is the norm we wanted
+					assertNotNull(nuAgent.getSpecificNorms().contains(specificNorm));
+					continue;
+				}
+				assertTrue("Could not find abstract norm "+norm+" in abstract norms", false);
+			}
+			//Then we want to remove this norm
+			assertNotNull(specificNorm);
+			assertNotNull(nuAgent.removeSpecificNorm(specificNorm.getNormId()));
+			assertFalse(nuAgent.getSpecificNorms().contains(specificNorm));
+			
+			assertTrue(nuAgent.addAbstractNorm(obligation2));
+			norm = new NormImpl(obligation2);
+			for(Norm n : nuAgent.getAbstractNorms()) {
+				if(n.getNormId().equals(norm.getNormId())) {
+//					Unifier un = new Unifier();
+//					un.unifies(ASSyntax.parseTerm("activate(a,b)"), ASSyntax.parseTerm("activate(A,B)"));
+//					Norm specificNorm = n.instantiateNorm(un);
+//					assertTrue(nuAgent.addSpecificNorm(specificNorm));
+//					assertNotNull(nuAgent.getSpecificNorms().contains(specificNorm));
+				}
+			}
+		} catch (NuBDIException e) {
+			fail(e.getMessage());
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 	/**
@@ -189,7 +230,42 @@ public class NuAgentTest {
 	}
 	
 	@Test
-	public void testNormActivation() {
+	public void testNormActivationObligation1() {
+		try {
+			assertEquals(0,nuAgent.getSpecificNorms().size());
+			assertTrue(nuAgent.addAbstractNorm(obligation1));
+			assertTrue(nuAgent.addBel(ASSyntax.parseLiteral("activate(12,15)")));
+			assertTrue(nuAgent.updateNorms());
+			assertEquals(1,nuAgent.getSpecificNorms().size());
+		} catch (NuBDIException e) {
+			fail(e.getMessage());
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testNormExpirationObligation1() {
+		//First we need the obligation to have been activated
+		testNormActivationObligation1();
+		try {
+			assertTrue(nuAgent.addBel(ASSyntax.parseLiteral("expire(15)")));
+			assertTrue(nuAgent.updateNorms());
+			assertEquals(0,nuAgent.getSpecificNorms().size());
+		}catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testTrueEquals() {
+		try {
+			Term t = ASSyntax.parseTerm("true");
+			assertEquals(t,Literal.LTrue);
+			assertTrue(t.equals(Literal.LTrue));
+		} catch (ParseException e) {
+			fail(e.getMessage());
+		}
 		
 	}
 

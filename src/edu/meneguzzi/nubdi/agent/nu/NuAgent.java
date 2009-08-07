@@ -19,8 +19,8 @@ import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefRevisionFunction
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultEventSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultIntentionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultMessageSelectionFunction;
-import edu.meneguzzi.nubdi.agent.function.defaults.DefaultOptionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.nu.function.NuBeliefUpdateFunction;
+import edu.meneguzzi.nubdi.agent.nu.function.NuOptionSelectionFunction;
 import edu.meneguzzi.nubdi.exception.NuBDIException;
 import edu.meneguzzi.nubdi.norm.Norm;
 import edu.meneguzzi.nubdi.norm.NormImpl;
@@ -48,7 +48,8 @@ public class NuAgent extends ModularAgent {
 		this.eventSelectionFunction = new DefaultEventSelectionFunction();
 		this.intentionSelectionFunction = new DefaultIntentionSelectionFunction();
 		this.messageSelectionFunction = new DefaultMessageSelectionFunction();
-		this.optionSelectionFunction = new DefaultOptionSelectionFunction();
+		//this.optionSelectionFunction = new DefaultOptionSelectionFunction();
+		this.optionSelectionFunction = new NuOptionSelectionFunction();
 		
 		this.abstractNorms = new Hashtable<String, Norm>();
 		this.specificNorms = new Hashtable<String, Norm>();
@@ -187,7 +188,7 @@ public class NuAgent extends ModularAgent {
 		for(Norm specificNorm : specificNorms.values()) {
 			if(specificNorm.supportsExpiration(this)) {
 				logger.info("Norm "+specificNorm+" has expired, removing from specific norms.");
-				this.removeAbstractNorm(specificNorm.getNormId());
+				this.removeSpecificNorm(specificNorm.getNormId());
 				normsChanged |= true;
 			}
 		}
@@ -248,7 +249,12 @@ public class NuAgent extends ModularAgent {
 				}
 			}
 		}
-		this.planAnnotations.put(plan.getLabel().toString(), annotation);
+		String planLabel = plan.getLabel().toString();
+		if(annotation != null) {
+			this.planAnnotations.put(planLabel, annotation);
+		} else {
+			this.planAnnotations.remove(planLabel);
+		}
 	}
 	
 	/**
