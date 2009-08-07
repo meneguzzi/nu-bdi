@@ -89,4 +89,20 @@ public class ConstraintAnnotation {
 			e.printStackTrace();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object o) {
+		return constraint.toString().equals(o.toString());
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return this.constraint.toString();
+	}
 }

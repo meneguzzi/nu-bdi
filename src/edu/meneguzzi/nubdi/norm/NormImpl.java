@@ -13,8 +13,9 @@ import jason.asSyntax.Term;
 import jason.asSyntax.parser.ParseException;
 
 import java.util.Iterator;
-import java.util.logging.Logger;
 
+import edu.meneguzzi.csp.ConstraintSolver;
+import edu.meneguzzi.csp.ConstraintSolverException;
 import edu.meneguzzi.nubdi.agent.nu.NuAgent;
 import edu.meneguzzi.nubdi.exception.NuBDIException;
 
@@ -45,7 +46,8 @@ public class NormImpl implements Norm {
 	protected Unifier unifier = null;
 	
 	/**
-	 * Creates a norm from a term encoding it
+	 * Creates a norm from a term encoding it.
+	 * Right now, roles and agents are completely ignored
 	 * @param norm
 	 */
 	public NormImpl(Term norm) throws NuBDIException {
@@ -232,7 +234,12 @@ public class NormImpl implements Norm {
 	 */
 	@Override
 	public boolean supportsExpiration(NuAgent agent) {
-		return expirationCondition.logicalConsequence(agent, unifier) != null;
+		boolean supportsExpiration = false;
+		Iterator<Unifier> it = expirationCondition.logicalConsequence(agent, unifier);
+		if(it != null) {
+			supportsExpiration = it.hasNext();
+		}
+		return supportsExpiration;
 	}
 
 	/* (non-Javadoc)
@@ -242,11 +249,19 @@ public class NormImpl implements Norm {
 	public boolean inScope(String agentId, String roleId, Literal literal) {
 		//First check if the norm unifier matches the supplied literal
 		literal = (Literal) literal.clone();
-		if(literal.apply(this.unifier)) {
-			//TODO double check this algorithm when the full implementation is done
+		Unifier un = this.unifier.clone();
+		if(un.unifies(literal, this.normTarget)) {
+			ConstraintSolver solver = ConstraintSolver.createConstraintSolver();
+			try {
+				//LogicalFormula formula = (LogicalFormula) normRestriction.clone();
+				
+				return solver.satisfiable(normRestriction);
+			} catch (ConstraintSolverException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
 		}
-		
-		Logger.getAnonymousLogger().severe("inScope not yet implemented");
 		return false;
 	}
 
@@ -276,7 +291,18 @@ public class NormImpl implements Norm {
 		default:
 			break;
 		}
-		builder.append(targetAgent);
+		builder.append(",");
+		if(targetAgent == null) {
+			builder.append("<no-agent>");
+		} else {
+			builder.append(targetAgent);
+		}
+		builder.append(",");
+		if(targetRole == null) {
+			builder.append("<no-role>");
+		} else {
+			builder.append(targetRole);
+		}
 		builder.append(",");
 		builder.append(normTarget);
 		builder.append("*");

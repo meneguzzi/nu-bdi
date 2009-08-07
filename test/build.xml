@@ -23,6 +23,7 @@
 	<path id="project.classpath">
 		<pathelement path="${nuBDIJar}" />
 		<pathelement path="${jasonJar}" />
+		<pathelement path="${jasonCSPJar}" />
 		<pathelement path="${creamJar}" />
 		<pathelement path="${jasonEnvJar}" />
 		<pathelement path="${build.dir}" />

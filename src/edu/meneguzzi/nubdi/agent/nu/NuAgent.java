@@ -9,14 +9,13 @@ import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.Term;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import edu.meneguzzi.nubdi.agent.ModularAgent;
-import edu.meneguzzi.nubdi.agent.function.BeliefRevisionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultActionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefRevisionFunction;
-import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefUpdateFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultEventSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultIntentionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultMessageSelectionFunction;
@@ -90,6 +89,15 @@ public class NuAgent extends ModularAgent {
 	}
 	
 	/**
+	 * Returns a collection of the abstract norms, only for testing purposes 
+	 * hence it is package public
+	 * @return
+	 */
+	Collection<Norm> getAbstractNorms() {
+		return this.abstractNorms.values();
+	}
+	
+	/**
 	 * Adds a specific norm to the table of specific norms
 	 * @param n
 	 * @return
@@ -107,9 +115,18 @@ public class NuAgent extends ModularAgent {
 			//this.annotatePlans();
 			return true;
 		} else {
-			logger.severe("Tried to add a specific norm that is already in the table of specific norms.");
+			logger.fine("Tried to add a specific norm that is already in the table of specific norms.");
 			return false;
 		}
+	}
+	
+	/**
+	 * Returns a collection of the  specific norms, only for testing purposes 
+	 * hence it is package public
+	 * @return
+	 */
+	Collection<Norm> getSpecificNorms() {
+		return this.specificNorms.values();
 	}
 	
 	/**
@@ -159,15 +176,17 @@ public class NuAgent extends ModularAgent {
 				//logger.info("Norm has been activated");
 				while(activated.hasNext()) {
 					Unifier un = activated.next();
-					logger.info("Norm has been activated with unifier "+un);
 					Norm specificNorm = abstractNorm.instantiateNorm(un);
-					//TODO review this algorithm
-					normsChanged |= this.addSpecificNorm(specificNorm);
+					if(this.addSpecificNorm(specificNorm)) {
+						logger.info("Norm has been activated with unifier "+un);
+						normsChanged |= true;
+					}
 				}
 			}
 		}
 		for(Norm specificNorm : specificNorms.values()) {
 			if(specificNorm.supportsExpiration(this)) {
+				logger.info("Norm "+specificNorm+" has expired, removing from specific norms.");
 				this.removeAbstractNorm(specificNorm.getNormId());
 				normsChanged |= true;
 			}
@@ -202,12 +221,16 @@ public class NuAgent extends ModularAgent {
 	 * @param plan
 	 */
 	public void annotatePlan(Plan plan) {
-		ConstraintAnnotation annotation = new ConstraintAnnotation();
-		for(PlanBody step = plan.getBody(); step.getBodyNext()!=null; step=step.getBodyNext()) {
+		ConstraintAnnotation annotation = null;
+		for(PlanBody step = plan.getBody(); step!=null; step=step.getBodyNext()) {
+			logger.finest("Annotating step "+step);
 			for(Norm sNorm : specificNorms.values()) {
 				ConstraintAnnotation newAnnotation = null;
 				//TODO Check if we really want this to be Literal, if exceptions occur, maybe we are talking about structure or term
-				if(sNorm.inScope(this.getTS().getUserAgArch().getAgName(), null, (Literal)step.getBodyTerm())) {
+				if(step.getBodyTerm()!=null && sNorm.inScope(this.getTS().getUserAgArch().getAgName(), null, (Literal)step.getBodyTerm())) {
+					//TODO Make sure we won't need the unifier we got from 
+					//TODO unifying the step with the norm for the norm restriction
+					logger.info("Norm "+sNorm+" is in scope of step "+step+" with restriction "+sNorm.getNormRestriction());
 					newAnnotation = new ConstraintAnnotation(sNorm.getNormRestriction());
 					//If we are talking about prohibition, we need to inverse them
 					if(sNorm.getNormType() == NormType.prohibition) {
@@ -216,9 +239,26 @@ public class NuAgent extends ModularAgent {
 				} else {
 					newAnnotation = new ConstraintAnnotation();
 				}
-				annotation.compose(newAnnotation);
+				//If we are in the first step of a plan our entire annotation 
+				//will be the annotation for the current step
+				if(annotation == null) {
+					annotation = newAnnotation;
+				} else {
+					annotation.compose(newAnnotation);
+				}
 			}
 		}
 		this.planAnnotations.put(plan.getLabel().toString(), annotation);
+	}
+	
+	/**
+	 * Returns the {@link ConstraintAnnotation} for the referred plan indexed
+	 * by its label.
+	 * 
+	 * @param planLabel
+	 * @return
+	 */
+	public ConstraintAnnotation getAnnotationForPlan(String planLabel) {
+		return this.planAnnotations.get(planLabel);
 	}
 }

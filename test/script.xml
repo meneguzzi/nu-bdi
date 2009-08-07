@@ -14,7 +14,7 @@
 	</step>
 		
 	<step time="7">
-		//emergency_level(15,low).
+		emergency_level(15,high).
 	</step>
 	
 	<step time="10">
