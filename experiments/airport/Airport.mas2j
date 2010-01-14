@@ -11,5 +11,6 @@ MAS airport {
          org.kcl.jason.env.scripted.ScriptedEnvironment("script.xml")//, "rover.act")
 
     agents: 
-         bombDisposal agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent;
+         //bombDisposal agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent;
+         bombDisposalNir;// agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent;
 }

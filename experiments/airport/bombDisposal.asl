@@ -33,28 +33,28 @@ event("Test","Annotation").
 	   !moveTo(X,Y, [ m(XC, YC-1, s) | [m(XC,YC,D) | MT ]]).
 	
 //Finished moving
-+!executeMoves([]) : true
++!executeMoves([m(_,_,x)]) : true
 	<- .puts("Arrived at location").
 	
-+!executeMoves([m(_,_,_) | MT]) : true
-	<- .puts("Moving to direction #{D}");
-	   !executeMoves([MT]).
+//+!executeMoves([m(_,_,_) | MT]) : true
+//	<- .puts("Moving to direction #{D}");
+//	   !executeMoves([MT]).
 	   
-+!executeMoves([m(_,_,e) | MT]) : true
++!executeMoves([m(_,_,D) | MT]) : true
 	<- .puts("Moving to direction #{D}");
-	   !executeMoves([MT]).
+	   !executeMoves(MT).
 
 +!executeMoves([m(_,_,w) | MT]) : true
 	<- .puts("Moving to direction #{D}");
-	   !executeMoves([MT]).
+	   !executeMoves(MT).
 
 +!executeMoves([m(_,_,n) | MT]) : true
 	<- .puts("Moving to direction #{D}");
-	   !executeMoves([MT]).
+	   !executeMoves(MT).
 	   
 +!executeMoves([m(_,_,s) | MT]) : true
 	<- .puts("Moving to direction #{D}");
-	   !executeMoves([MT]).
+	   !executeMoves(MT).
 
 //this is the entry point, startMoving(0,0,3,3) routes from 3,3 to 0,0
 +!startMoving(X,Y,XS,YS): true 
