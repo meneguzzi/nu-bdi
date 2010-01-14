@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A script containing test perception. -->
+<script>
+	<step time="0">
+		move(1,1).
+	</step>
+	<step time="1">
+		norm(obligation, evacuate(P,X,Y), "10&lt;=X &amp; X&lt;=40 &amp; 20&lt;=Y &amp; Y&lt;=80", "at_loc(P,X) &amp; unsafe(X) &amp; safe(Y)", emergency_level(X,low), 12).
+	</step>
+	<step time="3">
+		unsafe(3,2).
+		unsafe(2,3).
+		unsafe(3,4).
+	</step>
+		
+	<step time="7">
+		
+	</step>
+	
+	<step time="10" wipe="true">
+		
+	</step>
+</script>

@@ -33,13 +33,13 @@ public class NuAgentTest {
 		    "action(A,B)," +
 		    "A > 10," +
 		    "activate(A,B)," +
-		    "expire(B), 11).";
+		    "expire(B), 11)";
 	protected static final String obligation2String = 
 		    "norm(obligation, " +
 			"evacuate(P,X,Y), " +
 			"\"10<=X & X<=40 & 20<=Y & Y<=80\"," +
 			"\"at_loc(P,X) & unsafe(X) & safe(Y)\", " +
-			"emergency_level(X,low), 12).";
+			"emergency_level(X,low), 12)";
 	
 	protected Term obligation1;
 	protected Term obligation2;

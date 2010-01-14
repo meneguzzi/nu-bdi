@@ -7,6 +7,7 @@ import jason.asSemantics.Option;
 import jason.asSyntax.Pred;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import edu.meneguzzi.nubdi.agent.function.OptionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.nu.ConstraintAnnotation;
@@ -24,6 +25,9 @@ import edu.meneguzzi.nubdi.agent.nu.NuAgent;
  */
 public class NuOptionSelectionFunction implements
 		OptionSelectionFunction<NuAgent> {
+	
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NuOptionSelectionFunction.class.getName());
 
 	/* (non-Javadoc)
 	 * @see edu.meneguzzi.nubdi.agent.function.OptionSelectionFunction#selectOption(jason.asSemantics.Agent, java.util.List)
@@ -34,6 +38,9 @@ public class NuOptionSelectionFunction implements
 		for(Option option : options) {
 			Pred label = option.getPlan().getLabel();
 			ConstraintAnnotation constraint = agent.getAnnotationForPlan(label.toString());
+//			if(constraint!=null) {
+//				logger.info("About to check constraint: "+constraint.toString());
+//			}
 			//We select any plan that has no constraint, or one that has a 
 			//satisfiable constraint
 			if(constraint == null || constraint.isSatisfiable(option.getUnifier())) {
