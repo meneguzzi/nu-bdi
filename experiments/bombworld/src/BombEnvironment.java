@@ -114,9 +114,13 @@ public class BombEnvironment extends Environment {
 		for (Bin b:bins)
 		    if (b.getX()==bomb.getX() && b.getY()==bomb.getY() && b.accepts(bomb))
 		    {
-		    	logger.info(""+bomb);
-		    	logger.info(""+bombs);
-		    	logger.info(""+((HashSet<Bomb>) bombs).remove(bomb));
+		    	Set<Bomb> tmpB=new HashSet<Bomb>();
+		    	for (Bomb bb:bombs)
+		    	{
+		    		if (bb!=bomb)
+		    			tmpB.add(bb);
+		    	}
+		    	bombs=tmpB;
 		    	//can add a break here.
 		    }
 		
