@@ -61,17 +61,18 @@
      DistNew=.length(T)+2+(XC-X)*(XC-X)+(YN-Y)*(YN-Y);
      .concat([m(DistNew,XC,YN,s)],[m(Dist,XC,YC,D)|T],R).
 
-+!doMove([]).
-+!doMove([m(_,_,_,D)|T]) 
-  <-  move(D);
-      !doMove(T).
+//+!doMove([]).
+//+!doMove([m(_,_,_,D)|T]) 
+//  <-  move(D);
+//      !doMove(T).
 
 //alternate doMove which checks for unsafe
-//+!doMove([m(_X,Y,D)|T]): unsafe(X,Y)
-//  <- +!clearCache ; !moveTo(X,Y).  //replan the move
-//+!doMove([m(_,X,Y,D)|T]):// not unsafe(X,Y)
-//  <- move(D);
-//     !doMove(T).
++!doMove([]).
++!doMove([m(_X,Y,D)|T]): unsafe(X,Y)
+  <- !clearCache ; !moveTo(X,Y).  //replan the move
++!doMove([m(_,X,Y,D)|T]): not unsafe(X,Y)
+  <- move(D);
+     !doMove(T).
 
 +!clearCache : triedVisit(X,Y) <- -triedVisit(X,Y); !clearCache.
 +!clearCache.
