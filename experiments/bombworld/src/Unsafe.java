@@ -5,4 +5,11 @@ public class Unsafe extends Position{
 		super(x,y);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+//	@Override
+//	public String toString() {
+//		return "unsafe("+x+","+y+")";
+//	}
 }

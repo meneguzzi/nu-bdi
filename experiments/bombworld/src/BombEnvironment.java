@@ -1,15 +1,22 @@
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.ListTerm;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
+import jason.asSyntax.Term;
+import jason.asSyntax.parser.ParseException;
 import jason.environment.Environment;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class BombEnvironment extends Environment implements Runnable {
+public class BombEnvironment extends Environment {
 	private static Logger logger = Logger.getLogger("BombEnvironment");
 
 	
@@ -18,44 +25,154 @@ public class BombEnvironment extends Environment implements Runnable {
 	Set<Bin> bins=new HashSet<Bin>();
 	Set<Unsafe> unsafe=new HashSet<Unsafe>();
 	
+	Set<Unsafe> unsafeChange=new HashSet<Unsafe>();
+	long unsafeChangeTime;
+	
 	//This constructor is just meant to test the basic environment
 	public BombEnvironment()
 	{
-		Set<Integer> t=new HashSet<Integer>();
-		t.add(1);
-		this.addBin(3, 3, t);
-		
-		this.addBomb(8, 8, 1);
-		
-		this.addAgent("bombagent", 4, 4);
-		
-		this.addUnsafe(5,4);
+//		Set<Integer> t=new HashSet<Integer>();
+//		t.add(1);
+//		this.addBin(3, 3, t);
+//		
+//		this.addBomb(8, 8, 1);
+//		
+//		this.addAgent("bombagent", 4, 4);
+//		
+//		this.addUnsafe(5,4);
+		if(!configEnvironment("bombworld.properties")) {
+			logger.info("Failed loading properties");
+		}
 		
 		for (Literal l:this.getAllPercepts())
 			this.addPercept(l);
-		
-		Thread thread = new Thread(this);
-		thread.start();
 	}
 	
+	private synchronized boolean configEnvironment(String propertiesFile) {
+		Properties props = new Properties();
+		try {
+			props.load(new FileReader(propertiesFile));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		boolean retValue = true;
+		try {
+			String binPositions = props.getProperty("bins");
+			if(binPositions != null) {
+				ListTerm list = ASSyntax.parseList(binPositions);
+				for(Term t : list) {
+					int x = Integer.parseInt(((Structure)t).getTerm(0).toString());
+					int y = Integer.parseInt(((Structure)t).getTerm(1).toString());
+					int type = Integer.parseInt(((Structure)t).getTerm(2).toString());
+					Set<Integer> ts=new HashSet<Integer>();
+					ts.add(type);
+					this.addBin(x, y, ts);
+				}
+			} else {
+				logger.warning("Failed to find and/or parse bin positions");
+				retValue = false;
+			}
+			
+			String bombPositions = props.getProperty("bombs");
+			if(bombPositions != null) {
+				ListTerm list = ASSyntax.parseList(bombPositions);
+				for(Term t : list) {
+					int x = Integer.parseInt(((Structure)t).getTerm(0).toString());
+					int y = Integer.parseInt(((Structure)t).getTerm(1).toString());
+					int type = Integer.parseInt(((Structure)t).getTerm(2).toString());
+					this.addBomb(x, y, type);
+				}
+			} else {
+				logger.warning("Failed to find and/or parse bomb positions");
+				retValue = false;
+			}
+			
+			String agentPosition = props.getProperty("agent");
+			if(agentPosition != null) {
+				Literal l = ASSyntax.parseLiteral(agentPosition);
+				int x = Integer.parseInt(l.getTerm(0).toString());
+				int y = Integer.parseInt(l.getTerm(1).toString());
+				this.addAgent("bombagent", x, y);
+			} else {
+				logger.warning("Failed to find and/or parse agent position");
+				retValue = false;
+			}
+			
+			String unsafePositions = props.getProperty("unsafes");
+			if(unsafePositions != null) {
+				ListTerm list = ASSyntax.parseList(unsafePositions);
+				for(Term t : list) {
+					int x = Integer.parseInt(((Structure)t).getTerm(0).toString());
+					int y = Integer.parseInt(((Structure)t).getTerm(1).toString());
+					this.addUnsafe(x, y);
+				}
+			} else {
+				logger.warning("Failed to find and/or parse unsafe positions");
+				retValue = false;
+			}
+			
+			unsafePositions = props.getProperty("unsafesChange");
+			if(unsafePositions != null) {
+				ListTerm list = ASSyntax.parseList(unsafePositions);
+				for(Term t : list) {
+					int x = Integer.parseInt(((Structure)t).getTerm(0).toString());
+					int y = Integer.parseInt(((Structure)t).getTerm(1).toString());
+					this.addUnsafeChange(x, y);
+				}
+			} else {
+				logger.warning("Failed to find and/or parse unsafe positions change");
+				//this is not necessarily an error
+			}
+			
+			String unsageChangeTimeS = props.getProperty("unsagesChangeTime");
+			if(unsageChangeTimeS != null) {
+				this.unsafeChangeTime = Long.parseLong(unsageChangeTimeS);
+				this.unsafeChangeTime += System.currentTimeMillis();
+			} else {
+				logger.warning("Failed to find and/or parse unsafe change time");
+			}
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return retValue;
+	}
+
 	public void addUnsafe(int x,int y)
 	{
+		logger.info("Adding unsafe at "+x+","+y);
 		unsafe.add(new Unsafe(x,y));
+	}
+	
+	/**
+	 * @param x
+	 * @param y
+	 */
+	private void addUnsafeChange(int x, int y) {
+		logger.info("Adding unsafeChange at "+x+","+y);
+		unsafeChange.add(new Unsafe(x,y));
 	}
 	
 	public void addAgent(String name,int x, int y)
 	{
+		logger.info("Adding agent '"+name+"' at "+x+","+y);
 		Agent a=new Agent(name,x,y);
 		agents.put(name,a);
 	}
 	
 	public void addBomb(int x,int y, int type)
 	{
+		logger.info("Adding bomb at "+x+","+y+" of type "+type);
 		bombs.add(new Bomb(x,y,type));
 	}
 	
 	public void addBin(int x,int y, Set<Integer> types)
 	{
+		logger.info("Adding bin at "+x+","+y+" of types "+types);
 		bins.add(new Bin(x,y,types));
 	}
 	
@@ -72,6 +189,13 @@ public class BombEnvironment extends Environment implements Runnable {
 		if (act.getFunctor().equals("drop"))
 		  if (!dropBomb(a))
 			  return false;
+		
+		if(unsafeChangeTime != 0 && System.currentTimeMillis() > unsafeChangeTime) {
+			logger.info("Changing unsafe squares from: "+this.unsafe+" to "+this.unsafeChange);
+			unsafeChangeTime = 0;
+			this.unsafe.clear();
+			this.unsafe.addAll(unsafeChange);
+		}
 		
 		Set<Literal> newPercepts=getAllPercepts();
 		//logger.info("New percepts are: "+newPercepts);
@@ -189,26 +313,6 @@ public class BombEnvironment extends Environment implements Runnable {
 				ret.add(Literal.parseLiteral("carrying("+a.getName()+")"));
 		}
 		return ret;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-		try {
-			Thread.sleep(500);
-			logger.info("Changing the unsafe areas");
-			this.addUnsafe(6, 1);
-			this.addUnsafe(6, 2);
-			this.addUnsafe(6, 3);
-			this.addUnsafe(6, 4);
-			this.addUnsafe(6, 5);
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
 	}
 	
 }
