@@ -2,12 +2,14 @@
 
 !clearBomb.
 
-+!clearBomb:not bomb(_,_,_) <- true.
++!clearBomb:not bomb(_,_,_) <- .puts("Bomb cleared.").
 
 +!clearBomb : bomb(X,Y,T) & bin(XB,YB,T) 
-   <- !moveTo(X,Y);
+   <- !moveTo(X,Y); .puts("Picking up bomb #{T} from #{X},#{Y}");
       pickup;
       !moveTo(XB,YB);
+      .puts("Dropping bomb #{T} at #{XB},#{YB}");
+      //!moveTo(X,Y); 
       drop;
       !clearBomb.
 
@@ -68,10 +70,17 @@
 
 //alternate doMove which checks for unsafe
 +!doMove([]).
-+!doMove([m(_X,Y,D)|T]): unsafe(X,Y)
-  <- !clearCache ; !moveTo(X,Y).  //replan the move
+//+!doMove([m(_X,Y,D)|T]): unsafe(X,Y)
+//  <- !clearCache ; !moveTo(X,Y).  //replan the move
+
+-!doMove([m(_,X,Y,D)|T]) : true
+  <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}.");
+     !clearCache;
+     !moveTo(X,Y).  //replan the move
+  
 +!doMove([m(_,X,Y,D)|T]): not unsafe(X,Y)
-  <- move(D);
+  <- .puts("Moving #{D} to #{X},#{Y}.");
+     move(D);
      !doMove(T).
 
 +!clearCache : triedVisit(X,Y) <- -triedVisit(X,Y); !clearCache.

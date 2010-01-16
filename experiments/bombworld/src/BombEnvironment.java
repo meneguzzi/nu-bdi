@@ -1,20 +1,15 @@
 
-import java.util.logging.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
 
-public class BombEnvironment extends Environment {
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
+public class BombEnvironment extends Environment implements Runnable {
 	private static Logger logger = Logger.getLogger("BombEnvironment");
 
 	
@@ -39,6 +34,8 @@ public class BombEnvironment extends Environment {
 		for (Literal l:this.getAllPercepts())
 			this.addPercept(l);
 		
+		Thread thread = new Thread(this);
+		thread.start();
 	}
 	
 	public void addUnsafe(int x,int y)
@@ -77,6 +74,7 @@ public class BombEnvironment extends Environment {
 			  return false;
 		
 		Set<Literal> newPercepts=getAllPercepts();
+		//logger.info("New percepts are: "+newPercepts);
 		
 		for (Literal l:newPercepts)
 			if (!oldPercepts.contains(l))
@@ -91,6 +89,7 @@ public class BombEnvironment extends Environment {
 	//tries to pick up the bomb at the location of agent a. Returns false if no bomb exists
 	public boolean pickupBomb(Agent a)
 	{
+		logger.info("Executing 'pickup'");
 		for (Bomb b:bombs)
 			if (b.getX()==a.getX() && b.getY()==a.getY())
 			{ 
@@ -102,6 +101,7 @@ public class BombEnvironment extends Environment {
 	
 	public boolean dropBomb(Agent a)
 	{
+		logger.info("Executing 'drop'");
 		if (a.getCarrying()==null)
 			return false;
 		for (Bomb b:bombs) //can't drop bombs on other bombs
@@ -189,6 +189,26 @@ public class BombEnvironment extends Environment {
 				ret.add(Literal.parseLiteral("carrying("+a.getName()+")"));
 		}
 		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		try {
+			Thread.sleep(500);
+			logger.info("Changing the unsafe areas");
+			this.addUnsafe(6, 1);
+			this.addUnsafe(6, 2);
+			this.addUnsafe(6, 3);
+			this.addUnsafe(6, 4);
+			this.addUnsafe(6, 5);
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 }
