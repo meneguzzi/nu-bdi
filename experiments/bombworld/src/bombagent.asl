@@ -13,7 +13,9 @@
       drop;
       !clearBomb.
 
-+!moveTo(X,Y) : agent(bombagent,XS,YS) <- !moveTo(X,Y,[[m(1,XS,YS,x)]]).
++!moveTo(X,Y) : agent(bombagent,XS,YS) 
+  <- .puts("Planning movement from #{XS},#{YS} to #{X},#{Y}.");
+     !moveTo(X,Y,[[m(1,XS,YS,x)]]).
 
 +!moveTo(_,_,[]) <- .puts("failed") ; .fail.
 
@@ -74,7 +76,7 @@
 //  <- !clearCache ; !moveTo(X,Y).  //replan the move
 
 -!doMove([m(_,X,Y,D)|T]) : true
-  <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}.");
+  <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}, replanning.");
      !clearCache;
      !moveTo(X,Y).  //replan the move
   
