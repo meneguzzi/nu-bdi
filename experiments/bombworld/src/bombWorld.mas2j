@@ -1,6 +1,7 @@
 MAS bombworld {
     infrastructure: Centralised
     environment: BombEnvironment 
+
     agents: bombagent ; 
 }
 

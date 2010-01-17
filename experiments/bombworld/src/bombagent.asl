@@ -2,7 +2,7 @@
 
 !clearBomb.
 
-+!clearBomb:not bomb(_,_,_) <- .puts("Bomb cleared.").
++!clearBomb:not bomb(_,_,_) <- .puts("All bombs cleared. Yay!").
 
 +!clearBomb : bomb(X,Y,T) & bin(XB,YB,T) 
    <- !moveTo(X,Y); .puts("Picking up bomb #{T} from #{X},#{Y}");
@@ -17,7 +17,7 @@
   <- .puts("Planning movement from #{XS},#{YS} to #{X},#{Y}.");
      !moveTo(X,Y,[[m(1,XS,YS,x)]]).
 
-+!moveTo(_,_,[]) <- .puts("failed") ; .fail.
++!moveTo(_,_,[]) <- .puts("Failed to find a path, sorry") ; .fail.
 
 +!moveTo(X,Y,[[m(Dist,X,Y,D)|P]|_]) : true
   <- .concat([m(Dist,X,Y,D)],P,Path);
@@ -25,6 +25,42 @@
      RP=[HR|TR];
      !doMove(TR);
      !clearCache.
+
+//-----DEAL WITH SPECIAL CASE WHERE WE START AT UNSAFE. We
+//assume we can get out of there with one move.
++!moveTo(X,Y,[[m(1,XC,YC,x)]]): unsafe(XC,YC)
+  <- 
+     !addMoveE([m(1,XC,YC,x)],NMLE);
+     !addMoveW([m(1,XC,YC,x)],NMLW);
+     !addMoveN([m(1,XC,YC,x)],NMLN);
+     !addMoveS([m(1,XC,YC,x)],NMLS);
+     !insert(NMLE,[],MT1);
+     !insert(NMLW,MT1,MT2);
+     !insert(NMLN,MT2,MT3);
+     !insert(NMLS,MT3,MT4);
+     !moveTo(X,Y,MT4).
+
++!addMoveE([m(Dist,XC,YC,D)],R) 
+  <- XN = XC+1 ;
+     DistNew=1+(XN-X)*(XN-X)+(YC-Y)*(YC-Y);
+     .concat([m(DistNew,XN,YC,e)],[m(Dist,XC,YC,D)],R) ; 
+     +triedVisit(XC,YC). //we only need to add it once
+
++!addMoveW([m(Dist,XC,YC,D)],R) 
+  <- XN = XC-1;
+     DistNew=1+(XN-X)*(XN-X)+(YC-Y)*(YC-Y);
+     .concat([m(DistNew,XN,YC,w)],[m(Dist,XC,YC,D)],R).
+
++!addMoveN([m(Dist,XC,YC,D)],R) 
+  <- YN = YC+1; 
+     DistNew=1+(XC-X)*(XC-X)+(YN-Y)*(YN-Y);
+     .concat([m(DistNew,XC,YN,n)],[m(Dist,XC,YC,D)],R).
+
++!addMoveS([m(Dist,XC,YC,D)],R) 
+  <- YN = YC-1; 
+     DistNew=1+(XC-X)*(XC-X)+(YN-Y)*(YN-Y);
+     .concat([m(DistNew,XC,YN,s)],[m(Dist,XC,YC,D)],R).
+//-----END DEAL WITH SPECIAL CASE WHERE WE START AT UNSAFE
 
 +!moveTo(X,Y,[[m(Dist,XC,YC,_)|_]|MLT]): unsafe(XC,YC) 
 <- !moveTo(X,Y,MLT).
@@ -43,6 +79,11 @@
      !insert(NMLN,MT2,MT3);
      !insert(NMLS,MT3,MT4);
      !moveTo(X,Y,MT4).
+
+//Debug code to print the first element of a list
+//+!printHead([])<-.print(" fin head ").
+//+!printHead([[m(Dist,X,Y,D)|T]|T2]) <- A=m(Dist,X,Y,D) ; .print(A) ;
+//!printHead(T2).
 
 +!addMoveE([m(Dist,XC,YC,D)|T],R) 
   <- XN = XC+1 ;
@@ -75,10 +116,16 @@
 //+!doMove([m(_X,Y,D)|T]): unsafe(X,Y)
 //  <- !clearCache ; !moveTo(X,Y).  //replan the move
 
--!doMove([m(_,X,Y,D)|T]) : true
+//compute the destination we're trying to move to, once we find it, replan the
+//move.
++!moveToDestination([m(_,X,Y,D)]) <- !moveTo(X,Y). 
++!moveToDestination([_|T]) <-
+ !moveToDestination(T).
+
+-!doMove([m(_,X,Y,D)|T]) : agent(bombagent,XS,YS) //true
   <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}, replanning.");
      !clearCache;
-     !moveTo(X,Y).  //replan the move
+     !moveToDestination([m(_X,Y,D)|T]).
   
 +!doMove([m(_,X,Y,D)|T]): not unsafe(X,Y)
   <- .puts("Moving #{D} to #{X},#{Y}.");
@@ -92,11 +139,12 @@
 +!insert(New,List,Ret) <- !insert(New,List,[],Ret).
 
 +!insert([m(Dist,XC,YC,D)|T],[],RC,Ret)<-.concat(RC,[[m(Dist,XC,YC,D)|T]],Ret).
+
 +!insert([m(Dist,XC,YC,D)|T],[[m(Distp,XCP,YCP,DP)|RT]|RPT],RC,Ret) : Dist<Distp
    <- .concat(RC,[[m(Dist,XC,YC,D)|T]],RH);
      .concat(RH,[[m(Distp,XCP,YCP,DP)|RT]],RHN);
      .concat(RHN,RPT,Ret).
 
 +!insert([m(Dist,XC,YC,D)|T],[[m(Distp,XCP,YCP,DP)|RT]|RPT],RC,Ret) : Dist>=Distp  
-  <- .concat([[m(Distp,XCP,YCP,DP)|RT]],RC,RCN);
+  <- .concat(RC,[[m(Distp,XCP,YCP,DP)|RT]],RCN);
      !insert([m(Dist,XC,YC,D)|T],RPT,RCN,Ret).
