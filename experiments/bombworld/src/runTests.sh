@@ -2,7 +2,7 @@
 
 WORKDIR=../../../
 
-cp bombagentNonNorm.asl bombagent.asl
+cp -f bombagentNonNorm.asl bombagent.asl
 
 export CLASSPATH=.:${WORKDIR}/lib/nuBDI.jar:${WORKDIR}/lib/jason-csp.jar:${WORKDIR}/lib/jason.jar
 

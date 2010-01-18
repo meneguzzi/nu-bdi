@@ -1,4 +1,4 @@
-//AGENT NAME is an
+//Agent with plans that rely on norms to work
 
 !clearBomb.
 
