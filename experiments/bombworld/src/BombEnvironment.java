@@ -6,14 +6,19 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.parser.ParseException;
 import jason.environment.Environment;
+import jason.infra.centralised.RunCentralisedMAS;
+import jason.runtime.RuntimeServicesInfraTier;
+import jason.stdlib.stopMAS;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 public class BombEnvironment extends Environment {
@@ -25,27 +30,21 @@ public class BombEnvironment extends Environment {
 	Set<Bin> bins=new HashSet<Bin>();
 	Set<Unsafe> unsafe=new HashSet<Unsafe>();
 	
-	Set<Unsafe> unsafeChange=new HashSet<Unsafe>();
-	long unsafeChangeTime;
+	boolean norms = false;
+	Literal unsafeNorm;
+	
+	int numBombs;
+	long startingTime;
+	Stack<Long> unsafeChangeTimes;
+	Stack< Set<Unsafe> > unsafeChanges;
+	Stack< Literal > unsafeNormChanges;
 	
 	//This constructor is just meant to test the basic environment
 	public BombEnvironment()
 	{
-//		Set<Integer> t=new HashSet<Integer>();
-//		t.add(1);
-//		this.addBin(3, 3, t);
-//		
-//		this.addBomb(8, 8, 1);
-//		
-//		this.addAgent("bombagent", 4, 4);
-//		
-//		this.addUnsafe(5,4);
-		if(!configEnvironment("bombworld.properties")) {
-			logger.info("Failed loading properties");
-		}
-		
-		for (Literal l:this.getAllPercepts())
-			this.addPercept(l);
+		unsafeChangeTimes = new Stack<Long>();
+		unsafeChanges = new Stack<Set<Unsafe>>();
+		unsafeNormChanges = new Stack<Literal>();
 	}
 	
 	/* (non-Javadoc)
@@ -53,18 +52,27 @@ public class BombEnvironment extends Environment {
 	 */
 	@Override
 	public void init(String[] args) {
-		if(args.length == 1 && args[0].equals("norms")) {
-			try {
-				//logger.info("Adding norm: norm(prohibition,move(D),unsafe(X,Y), X==6 & Y>0 & Y<8, activateNorm,false)");
-				//this.addPercept(ASSyntax.parseLiteral("norm(obligation, move(D), X==6 & Y<1 & Y>7, activateNorm, false, noUnsafe)"));
-				this.addPercept(ASSyntax.parseLiteral("norm(prohibition, move(D), X==6 & Y>0 & Y<8, activateNorm, false, noUnsafe)"));
-				//this.addPercept(ASSyntax.parseLiteral("norm(obligation, move(D), X==6 & Y>0 & Y<8, activateNorm, false, noUnsafe)"));
-				this.addPercept(ASSyntax.parseLiteral("activateNorm"));
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		String propertiesFile = null;
+		if(args.length > 0) {
+			propertiesFile = args[0];
+		} else {
+			propertiesFile = "bombworld.properties";
 		}
+		if(args.length == 2 && args[1].equals("norms")) {
+			norms = true;
+		}
+		
+		logger.info("Reading properties from '"+propertiesFile+"'");
+		
+		if(!configEnvironment(propertiesFile)) {
+			logger.info("Failed loading properties");
+		}
+		
+		for (Literal l:this.getAllPercepts())
+			this.addPercept(l);
+		
+		numBombs = bombs.size();
+		startingTime = System.currentTimeMillis();
 	}
 	
 	private synchronized boolean configEnvironment(String propertiesFile) {
@@ -132,25 +140,49 @@ public class BombEnvironment extends Environment {
 				retValue = false;
 			}
 			
-			unsafePositions = props.getProperty("unsafesChange");
-			if(unsafePositions != null) {
-				ListTerm list = ASSyntax.parseList(unsafePositions);
-				for(Term t : list) {
-					int x = Integer.parseInt(((Structure)t).getTerm(0).toString());
-					int y = Integer.parseInt(((Structure)t).getTerm(1).toString());
-					this.addUnsafeChange(x, y);
+			if(norms) {
+				String unsafeNormS = props.getProperty("unsafesNorm");
+				if(unsafeNormS != null) {
+					unsafeNorm = ASSyntax.parseLiteral(unsafeNormS);
+					this.addPercept(unsafeNorm);
+					this.addPercept((Literal) unsafeNorm.getTerm(3));
 				}
-			} else {
-				logger.warning("Failed to find and/or parse unsafe positions change");
-				//this is not necessarily an error
 			}
 			
-			String unsageChangeTimeS = props.getProperty("unsagesChangeTime");
-			if(unsageChangeTimeS != null) {
-				this.unsafeChangeTime = Long.parseLong(unsageChangeTimeS);
-				this.unsafeChangeTime += System.currentTimeMillis();
-			} else {
-				logger.warning("Failed to find and/or parse unsafe change time");
+			String unsafeChangesS = props.getProperty("unsafeChanges");
+			if(unsafeChangesS != null) {
+				int changes = Integer.parseInt(unsafeChangesS);
+				for(int i=changes; i>0 ; i--) {
+					unsafePositions = props.getProperty("unsafesChangeNew"+i);
+					if(unsafePositions != null) {
+						ListTerm list = ASSyntax.parseList(unsafePositions);
+						Set<Unsafe> unsafeChangeSet = new HashSet<Unsafe>();
+						for(Term t : list) {
+							int x = Integer.parseInt(((Structure)t).getTerm(0).toString());
+							int y = Integer.parseInt(((Structure)t).getTerm(1).toString());
+							unsafeChangeSet.add(new Unsafe(x,y));
+						}
+						this.unsafeChanges.push(unsafeChangeSet);
+					} else {
+						logger.warning("Failed to find and/or parse unsafe positions change");
+						//this is not necessarily an error
+					}
+					
+					String unsageChangeTimeS = props.getProperty("unsafesChangeTime"+i);
+					if(unsageChangeTimeS != null) {
+						long unsafeChangeTime = Long.parseLong(unsageChangeTimeS);
+						unsafeChangeTime += System.currentTimeMillis();
+						this.unsafeChangeTimes.push(unsafeChangeTime);
+					} else {
+						logger.warning("Failed to find and/or parse unsafe change time");
+					}
+					
+					String unsafesChangeNorm = props.getProperty("unsafesChangeNorm"+i);
+					if(unsafesChangeNorm !=null) {
+						Literal literal = ASSyntax.parseLiteral(unsafesChangeNorm);
+						this.unsafeNormChanges.push(literal);
+					}
+				}
 			}
 			
 		} catch (ParseException e) {
@@ -165,15 +197,6 @@ public class BombEnvironment extends Environment {
 	{
 		logger.info("Adding unsafe at "+x+","+y);
 		unsafe.add(new Unsafe(x,y));
-	}
-	
-	/**
-	 * @param x
-	 * @param y
-	 */
-	private void addUnsafeChange(int x, int y) {
-		logger.info("Adding unsafeChange at "+x+","+y);
-		unsafeChange.add(new Unsafe(x,y));
 	}
 	
 	public void addAgent(String name,int x, int y)
@@ -208,12 +231,29 @@ public class BombEnvironment extends Environment {
 		if (act.getFunctor().equals("drop"))
 		  if (!dropBomb(a))
 			  return false;
+		if(act.getFunctor().equals("endSimulation")) {
+			this.endSimulation();
+		}
 		
-		if(unsafeChangeTime != 0 && System.currentTimeMillis() > unsafeChangeTime) {
-			logger.info("Changing unsafe squares from: "+this.unsafe+" to "+this.unsafeChange);
-			unsafeChangeTime = 0;
+		if(!unsafeChangeTimes.isEmpty() && System.currentTimeMillis() > unsafeChangeTimes.peek()) {
+			unsafeChangeTimes.pop();
+			Set<Unsafe> unsafeChange = unsafeChanges.pop();
+			logger.info("Changing unsafe squares from: "+this.unsafe+" to "+unsafeChange);
 			this.unsafe.clear();
 			this.unsafe.addAll(unsafeChange);
+			if(norms) {
+				//Get the new unsafe norm
+				Literal newNorm = unsafeNormChanges.pop();
+				//Adding the expiration condition for the norm that we want to remove
+				this.addPercept((Literal) unsafeNorm.getTerm(4));
+				//And removing the activation condition for the same norm so it won't reactivate
+				this.removePercept((Literal) unsafeNorm.getTerm(3));
+				
+				this.addPercept(newNorm);
+				this.addPercept((Literal) newNorm.getTerm(3));
+				
+				this.unsafeNorm = newNorm;
+			}
 		}
 		
 		Set<Literal> newPercepts=getAllPercepts();
@@ -332,6 +372,22 @@ public class BombEnvironment extends Environment {
 				ret.add(Literal.parseLiteral("carrying("+a.getName()+")"));
 		}
 		return ret;
+	}
+	
+	/**
+	 * Finishes the simulation and writes the statistics to the stats file.
+	 */
+	protected void endSimulation() {
+		startingTime = System.currentTimeMillis() - startingTime;
+		try {
+			FileWriter writer = new FileWriter("stats.txt");
+			writer.write(""+numBombs+" "+startingTime+System.getProperty("line.separator"));
+			writer.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		RunCentralisedMAS.getRunner().finish();
 	}
 	
 }

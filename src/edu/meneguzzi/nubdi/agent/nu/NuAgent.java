@@ -179,7 +179,7 @@ public class NuAgent extends ModularAgent {
 					Unifier un = activated.next();
 					Norm specificNorm = abstractNorm.instantiateNorm(un);
 					if(this.addSpecificNorm(specificNorm)) {
-						logger.info("Norm has been activated with unifier "+un);
+						logger.info("Norm "+specificNorm.getNormId()+" has been activated with unifier "+un);
 						normsChanged |= true;
 					}
 				}
@@ -187,7 +187,7 @@ public class NuAgent extends ModularAgent {
 		}
 		for(Norm specificNorm : specificNorms.values()) {
 			if(specificNorm.supportsExpiration(this)) {
-				logger.info("Norm "+specificNorm+" has expired, removing from specific norms.");
+				logger.info("Norm "+specificNorm.getNormId()+" has expired, removing from specific norms.");
 				this.removeSpecificNorm(specificNorm.getNormId());
 				normsChanged |= true;
 			}
@@ -231,7 +231,7 @@ public class NuAgent extends ModularAgent {
 				if(step.getBodyTerm()!=null && sNorm.inScope(this, null, (Literal)step.getBodyTerm())) {
 					//TODO Make sure we won't need the unifier we got from 
 					//TODO unifying the step with the norm for the norm restriction
-					logger.info("Norm "+sNorm+" is in scope of step "+step+" with restriction "+sNorm.getNormRestriction());
+					logger.info("Norm "+sNorm.getNormId()+" is in scope of step "+step+" with restriction "+sNorm.getNormRestriction());
 					newAnnotation = new ConstraintAnnotation(sNorm.getNormRestriction());
 					//If we are talking about prohibition, we need to inverse them
 					if(sNorm.getNormType() == NormType.prohibition) {
