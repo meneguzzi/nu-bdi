@@ -2,7 +2,10 @@
 
 !clearBomb.
 
-+!clearBomb:not bomb(_,_,_) <- .puts("All bombs cleared. Yay!").
++!clearBomb:not bomb(_,_,_) 
+   <- .puts("All bombs cleared. Yay!");
+      //endSimulation;
+      .puts("Finished Simulation").
 
 +!clearBomb : bomb(X,Y,T) & bin(XB,YB,T) 
    <- !moveTo(X,Y); .puts("Picking up bomb #{T} from #{X},#{Y}");
@@ -125,6 +128,7 @@
 -!doMove([m(_,X,Y,D)|T]) : agent(bombagent,XS,YS) //true
   <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}, replanning.");
      !clearCache;
+     +unsafe(X,Y);
      !moveToDestination([m(_X,Y,D)|T]).
 
 @planMove
@@ -151,5 +155,6 @@
      !insert([m(Dist,XC,YC,D)|T],RPT,RCN,Ret).
 
 +norm(Type,Norm,Constraint,Activation,Expiration,Identifier) [source(S)]: true
-  <- edu.meneguzzi.nubdi.action.AddNorm(norm(Type,Norm,Constraint,Activation,Expiration,Identifier));
+  <- .abolish(unsafe(_,_));
+     edu.meneguzzi.nubdi.action.AddNorm(norm(Type,Norm,Constraint,Activation,Expiration,Identifier));
      .puts("Added norm #{Type} - #{Norm} - #{Constraint} - #{Activation} - #{Expiration} - #{Identifier}").
