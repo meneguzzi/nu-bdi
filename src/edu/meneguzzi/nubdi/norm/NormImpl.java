@@ -3,6 +3,7 @@
  */
 package edu.meneguzzi.nubdi.norm;
 
+import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
@@ -239,7 +240,7 @@ public class NormImpl implements Norm {
 	 * @see edu.meneguzzi.nubdi.norm.Norm#inScope(java.lang.String, java.lang.String, jason.asSyntax.Literal)
 	 */
 	@Override
-	public boolean inScope(String agentId, String roleId, Literal literal) {
+	public boolean inScope(Agent agentId, String roleId, Literal literal) {
 		//First check if the norm unifier matches the supplied literal
 		literal = (Literal) literal.clone();
 		Unifier un = this.unifier.clone();
@@ -247,8 +248,14 @@ public class NormImpl implements Norm {
 			ConstraintSolver solver = ConstraintSolver.createConstraintSolver();
 			try {
 				//LogicalFormula formula = (LogicalFormula) normRestriction.clone();
-				
-				return solver.satisfiable(normRestriction);
+				//XXX do this check eventually!!
+				//--------------------------------------------------------------------------------
+				//XXX Removed the check because of bugged constraint solver, must replace it here
+				//XXX for full range of checks to work
+				//return solver.satisfiable(normRestriction, agentId);
+				//--------------------------------------------------------------------------------
+				if(solver.satisfiable(normRestriction, agentId));
+				return true;
 			} catch (ConstraintSolverException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

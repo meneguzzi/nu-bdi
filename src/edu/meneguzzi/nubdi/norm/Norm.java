@@ -5,6 +5,7 @@ package edu.meneguzzi.nubdi.norm;
 
 import java.util.Iterator;
 
+import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LogicalFormula;
@@ -113,7 +114,7 @@ public interface Norm {
 	 * @param literal
 	 * @return
 	 */
-	public boolean inScope(String agentId, String roleId, Literal literal);
+	public boolean inScope(Agent agentId, String roleId, Literal literal);
 	
 	/**
 	 * Returns whether or not this norm is in conflict with the supplied norm.

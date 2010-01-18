@@ -228,7 +228,7 @@ public class NuAgent extends ModularAgent {
 			for(Norm sNorm : specificNorms.values()) {
 				ConstraintAnnotation newAnnotation = null;
 				//TODO Check if we really want this to be Literal, if exceptions occur, maybe we are talking about structure or term
-				if(step.getBodyTerm()!=null && sNorm.inScope(this.getTS().getUserAgArch().getAgName(), null, (Literal)step.getBodyTerm())) {
+				if(step.getBodyTerm()!=null && sNorm.inScope(this, null, (Literal)step.getBodyTerm())) {
 					//TODO Make sure we won't need the unifier we got from 
 					//TODO unifying the step with the norm for the norm restriction
 					logger.info("Norm "+sNorm+" is in scope of step "+step+" with restriction "+sNorm.getNormRestriction());

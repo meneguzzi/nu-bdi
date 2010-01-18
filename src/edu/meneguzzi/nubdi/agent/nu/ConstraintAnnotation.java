@@ -52,7 +52,7 @@ public class ConstraintAnnotation {
 		
 		boolean satisfiable = false;
 		try {
-			satisfiable = solver.satisfiable(formula);
+			satisfiable = solver.satisfiable(formula, null);
 		} catch (ConstraintSolverException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
