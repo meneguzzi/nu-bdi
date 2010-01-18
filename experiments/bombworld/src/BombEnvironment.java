@@ -380,7 +380,7 @@ public class BombEnvironment extends Environment {
 	protected void endSimulation() {
 		startingTime = System.currentTimeMillis() - startingTime;
 		try {
-			FileWriter writer = new FileWriter("stats.txt");
+			FileWriter writer = new FileWriter("stats.txt",true);
 			writer.write(""+numBombs+" "+startingTime+System.getProperty("line.separator"));
 			writer.flush();
 		} catch (IOException e) {
