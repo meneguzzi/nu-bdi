@@ -5,7 +5,7 @@ for i in 1..10 do
   total=0
   divisor=0
   while(line = file.gets)
-    divisor++
+    divisor+=1
     total+=line.to_i()
   end
   average = total/divisor
@@ -19,7 +19,7 @@ for i in 1..10 do
   total=0
   divisor=0
   while(line = file.gets)
-    divisor++
+    divisor+=1
     total+=line.to_i()
   end
   average = total/divisor
