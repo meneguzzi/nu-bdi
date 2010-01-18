@@ -191,25 +191,18 @@ public class NormImpl implements Norm {
 				              expirationCondition, normId+unifier.toString());
 		//TODO make sure the unifier application occurs well
 		norm.applyUnifier(unifier);
+		norm.activated = true;
 		return norm;
 	}
 	
 	protected boolean applyUnifier(Unifier unifier) {
 		this.unifier = unifier;
-		if(!normTarget.apply(unifier)) {
-			return false;
-		}
-		if(!normRestriction.apply(unifier)) {
-			return false;
-		}
-		if(!activationCondition.apply(unifier)) {
-			return false;
-		}
-		if(!expirationCondition.apply(unifier)) {
-			return false;
-		}
-		this.activated = true;
-		return true;
+		boolean substituted = false;
+		substituted |= normTarget.apply(unifier);
+		substituted |= normRestriction.apply(unifier);
+		substituted |= activationCondition.apply(unifier);
+		substituted |= expirationCondition.apply(unifier);
+		return substituted;
 	}
 
 	/* (non-Javadoc)

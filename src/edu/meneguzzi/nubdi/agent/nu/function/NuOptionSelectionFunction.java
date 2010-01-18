@@ -43,9 +43,13 @@ public class NuOptionSelectionFunction implements
 //			}
 			//We select any plan that has no constraint, or one that has a 
 			//satisfiable constraint
+			//logger.info("Going to select option");
 			if(constraint == null || constraint.isSatisfiable(option.getUnifier())) {
+				//if(constraint != null) logger.info("Satisfied constraint "+constraint);
 				selectedOption = option;
+				return selectedOption;
 			}
+			//logger.info("No option selected");
 		}
 		//TODO use the constraint scoring (now unimplemented) to decide on 
 		//TODO options that are unsatisfiable

@@ -126,8 +126,9 @@
   <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}, replanning.");
      !clearCache;
      !moveToDestination([m(_X,Y,D)|T]).
-  
-+!doMove([m(_,X,Y,D)|T]): not unsafe(X,Y)
+
+@planMove
++!doMove([m(_,X,Y,D)|T])//: not unsafe(X,Y)
   <- .puts("Moving #{D} to #{X},#{Y}.");
      move(D);
      !doMove(T).
@@ -148,3 +149,7 @@
 +!insert([m(Dist,XC,YC,D)|T],[[m(Distp,XCP,YCP,DP)|RT]|RPT],RC,Ret) : Dist>=Distp  
   <- .concat(RC,[[m(Distp,XCP,YCP,DP)|RT]],RCN);
      !insert([m(Dist,XC,YC,D)|T],RPT,RCN,Ret).
+
++norm(Type,Norm,Constraint,Activation,Expiration,Identifier) [source(S)]: true
+  <- edu.meneguzzi.nubdi.action.AddNorm(norm(Type,Norm,Constraint,Activation,Expiration,Identifier));
+     .puts("Added norm #{Type} - #{Norm} - #{Constraint} - #{Activation} - #{Expiration} - #{Identifier}").

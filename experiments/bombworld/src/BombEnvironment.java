@@ -48,6 +48,25 @@ public class BombEnvironment extends Environment {
 			this.addPercept(l);
 	}
 	
+	/* (non-Javadoc)
+	 * @see jason.environment.Environment#init(java.lang.String[])
+	 */
+	@Override
+	public void init(String[] args) {
+		if(args.length == 1 && args[0].equals("norms")) {
+			try {
+				//logger.info("Adding norm: norm(prohibition,move(D),unsafe(X,Y), X==6 & Y>0 & Y<8, activateNorm,false)");
+				//this.addPercept(ASSyntax.parseLiteral("norm(obligation, move(D), X==6 & Y<1 & Y>7, activateNorm, false, noUnsafe)"));
+				this.addPercept(ASSyntax.parseLiteral("norm(prohibition, move(D), X==6 & Y>0 & Y<8, activateNorm, false, noUnsafe)"));
+				//this.addPercept(ASSyntax.parseLiteral("norm(obligation, move(D), X==6 & Y>0 & Y<8, activateNorm, false, noUnsafe)"));
+				this.addPercept(ASSyntax.parseLiteral("activateNorm"));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private synchronized boolean configEnvironment(String propertiesFile) {
 		Properties props = new Properties();
 		try {

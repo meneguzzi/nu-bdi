@@ -1,5 +1,7 @@
 Things to do for this project:
 
+- URGENT Implement negated constraints because of prohibitions, completely bugged!!!!
+
 Things to discuss in conference call with everyone:
 
 - Decide when/how the norm update should take place:

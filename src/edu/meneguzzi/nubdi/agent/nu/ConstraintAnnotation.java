@@ -48,6 +48,7 @@ public class ConstraintAnnotation {
 		ConstraintSolver solver = ConstraintSolver.createConstraintSolver();
 		
 		LogicalFormula formula = (LogicalFormula) constraint.clone();
+		formula.apply(unifier);
 		
 		boolean satisfiable = false;
 		try {
@@ -82,7 +83,7 @@ public class ConstraintAnnotation {
 	public ConstraintAnnotation negate() {
 		
 		try {
-			LogicalFormula negated = ASSyntax.parseFormula("!("+this.constraint.toString()+")");
+			LogicalFormula negated = ASSyntax.parseFormula("not("+this.constraint.toString()+")");
 			return new ConstraintAnnotation(negated);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
