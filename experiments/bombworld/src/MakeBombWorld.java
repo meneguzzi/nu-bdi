@@ -4,9 +4,9 @@ import java.util.*;
 public class MakeBombWorld {
 
 	private static final int TIME_STEP = 750;
-	static final int MAXWALLPOSITION = 20;
+	static final int MAXWALLPOSITION = 10;
 	static final int MAXWALLLENGTH = 8;
-	static final int MAXBOMBPOSITION = 20;
+	static final int MAXBOMBPOSITION = 10;
 	static final int STARTWALLPOSITION = 4;
 	static final int STARTBOMBPOSITION = 5;
 
