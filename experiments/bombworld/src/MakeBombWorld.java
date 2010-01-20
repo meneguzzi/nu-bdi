@@ -46,6 +46,7 @@ public class MakeBombWorld {
 			{
 					
 					int finishy=positiveDir?starty+unsafeLength:starty-unsafeLength;
+          if (finishy<0) finishy=0;
 					if (positiveDir)
 						p.setProperty("unsafesNorm"+i,"norm(prohibition, move(D), X=="+startx+" & Y>"+starty+" & Y<"+finishy+", activateNorm"+i+", deactivateNorm"+i+", noUnsafe"+i+")");
 					else
@@ -61,6 +62,7 @@ public class MakeBombWorld {
 			else
 			{			
 				int finishx=positiveDir?startx+unsafeLength:startx-unsafeLength;
+        if (finishx<0) finishx=0;
 				if (positiveDir)
 					p.setProperty("unsafesNorm"+i,"norm(prohibition, move(D), Y=="+starty+" & X>"+startx+" & X<"+finishx+", activateNorm"+i+", deactivateNorm"+i+", noUnsafe"+i+")");
 				else
