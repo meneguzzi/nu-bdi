@@ -3,6 +3,7 @@ import java.util.*;
 
 public class MakeBombWorld {
 
+	  private static final int TIME_STEP = 750;
 	  static final int MAXWALLPOSITION = 15;
 	  static final int MAXWALLLENGTH = 8;
 	  static final int MAXBOMBPOSITION = 20;
@@ -14,7 +15,7 @@ public class MakeBombWorld {
   {
 	  
 	  
-	  for (int numberOfBombs=1;numberOfBombs<Integer.parseInt(args[0]);numberOfBombs++)
+	  for (int numberOfBombs=1;numberOfBombs<=Integer.parseInt(args[0]);numberOfBombs++)
 	  {
 	  //numberOfBombs=Integer.parseInt(args[0]);
 		  Properties p=new Properties();
@@ -27,7 +28,7 @@ public class MakeBombWorld {
 		  HashSet<String> conf=new HashSet<String>();//records position of unsafes
 		  for (int i=1;i<=numberOfBombs;i++)
 		  {
-			p.setProperty("unsafesChangeTime"+i,""+(500*(i+1)));
+			p.setProperty("unsafesChangeTime"+i,""+(TIME_STEP*(i+1)));
 			//generate a random unsafe
 			boolean xUnsafe=r.nextBoolean();
 			//we limit the length of the random to 10
@@ -95,7 +96,7 @@ public class MakeBombWorld {
 		  bombString=bombString+bombPos.get(numberOfBombs-1)+"]";
 		  p.setProperty("bombs",bombString);
 		  
-		  p.store(new FileWriter(args[1]+numberOfBombs),"");
+		  p.store(new FileWriter(args[1]+numberOfBombs+".properties"),"");
 	  }
   }
 }
