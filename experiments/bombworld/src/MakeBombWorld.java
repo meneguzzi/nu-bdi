@@ -4,7 +4,7 @@ import java.util.*;
 public class MakeBombWorld {
 
 	private static final int TIME_STEP = 750;
-	static final int MAXWALLPOSITION = 30;
+	static final int MAXWALLPOSITION = 20;
 	static final int MAXWALLLENGTH = 8;
 	static final int MAXBOMBPOSITION = 20;
 	static final int STARTWALLPOSITION = 4;
@@ -42,58 +42,35 @@ public class MakeBombWorld {
 				int starty = STARTWALLPOSITION
 						+ r.nextInt(MAXWALLPOSITION + numberOfBombs);
 
-				boolean positiveDir = r.nextBoolean();
 
 				String sent = "[";
 
 				if (xUnsafe) {
 
-					int finishy = positiveDir ? starty + unsafeLength : starty
-							- unsafeLength;
-					if (finishy < 0)
-						finishy = 0;
-					if (positiveDir)
-						p.setProperty("unsafesChangeNorm" + i,
+					int finishy = starty + unsafeLength;
+					p.setProperty("unsafesChangeNorm" + i,
 								"norm(prohibition, move(D), X==" + startx
 										+ " & Y>" + starty + " & Y<" + finishy
 										+ ", activateNorm" + i
 										+ ", deactivateNorm" + i + ", noUnsafe"
 										+ i + ")");
-					else
-						p.setProperty("unsafesChangeNorm" + i,
-								"norm(prohibition, move(D), X==" + startx
-										+ " & Y>" + finishy + " & Y<" + starty
-										+ ", activateNorm" + i
-										+ ", deactivateNorm" + i + ", noUnsafe"
-										+ i + ")");
-					for (int j = starty + 1; j < finishy - 1; j += positiveDir ? 1
-							: -1) {
+					for (int j = starty + 1; j < finishy -1 ; j ++ )
+          {
 						sent = sent + "u(" + startx + "," + j + "),";
 						conf.add("" + startx + "," + j);
 					}
 					sent = sent + "u(" + startx + "," + (finishy - 1) + ")]";
 					conf.add("" + startx + "," + (finishy - 1));
 				} else {
-					int finishx = positiveDir ? startx + unsafeLength : startx
-							- unsafeLength;
-					if (finishx < 0)
-						finishx = 0;
-					if (positiveDir)
-						p.setProperty("unsafesChangeNorm" + i,
+					int finishx = startx + unsafeLength;
+					p.setProperty("unsafesChangeNorm" + i,
 								"norm(prohibition, move(D), Y==" + starty
 										+ " & X>" + startx + " & X<" + finishx
 										+ ", activateNorm" + i
 										+ ", deactivateNorm" + i + ", noUnsafe"
 										+ i + ")");
-					else
-						p.setProperty("unsafesChangeNorm" + i,
-								"norm(prohibition, move(D), Y==" + starty
-										+ " & X>" + finishx + " & X<" + startx
-										+ ", activateNorm" + i
-										+ ", deactivateNorm" + i + ", noUnsafe"
-										+ i + ")");
-					for (int j = startx + 1; j < finishx - 1; j += positiveDir ? 1
-							: -1) {
+					for (int j = startx + 1; j < finishx -1 ; j ++)
+          {
 						sent = sent + "u(" + starty + "," + j + "),";
 						conf.add("" + starty + "," + j);
 
