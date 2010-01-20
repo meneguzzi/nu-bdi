@@ -82,6 +82,7 @@ public class MakeBombWorld {
 
 			}
 
+      Set<String> bombSet=new HashSet<String>();
 			int bombsPlaced = 0;
 			ArrayList<String> bombPos = new ArrayList<String>();
 			while (bombsPlaced < numberOfBombs) {
@@ -89,11 +90,14 @@ public class MakeBombWorld {
 						+ r.nextInt(MAXBOMBPOSITION + numberOfBombs);
 				int y = STARTBOMBPOSITION
 						+ r.nextInt(MAXBOMBPOSITION + numberOfBombs);
-				if (!conf.contains("" + x + "," + y)) {
+				if (!conf.contains("" + x + "," + y) && !bombSet.contains(""+x+","+y)) 
+        {
+          bombSet.add(""+x+","+y);
 					bombsPlaced++;
 					bombPos.add("bomb(" + x + "," + y + ",1)");
 				}
 			}
+
 
 			String bombString = "[";
 			for (int i = 0; i < numberOfBombs - 1; i++)
