@@ -71,12 +71,12 @@ public class MakeBombWorld {
 										+ i + ")");
 					for (int j = startx + 1; j < finishx -1 ; j ++)
           {
-						sent = sent + "u(" + starty + "," + j + "),";
-						conf.add("" + starty + "," + j);
+						sent = sent + "u(" + j + "," + starty + "),";
+						conf.add("" + j + "," + starty);
 
 					}
-					sent = sent + "u(" + starty + "," + (finishx - 1) + ")]";
-					conf.add("" + starty + "," + (finishx - 1));
+					sent = sent + "u(" + (finishx -1 )+ "," + starty + ")]";
+					conf.add("" + (finishx-1)+ "," + starty);
 				}
 				p.setProperty("unsafesChangeNew" + i, sent);
 
