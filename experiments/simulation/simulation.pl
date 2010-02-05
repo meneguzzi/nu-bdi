@@ -6,12 +6,14 @@ maxLength(20).
 moveFromTo(XC,YC,X,Y,MaxViols,UnsafeList,Path) :-
   moveTo(X,Y,[[(XC,YC,0,0,0)]],MaxViols,UnsafeList,Path).
 
-moveTo(_,_,[],_,_,_) :- write('failed'),fail.
+moveTo(_,_,[],_,_,_) :- fail.
 
 moveTo(X,Y,[P|_],_,_,P) :-
-  P=[(X,Y,_,_,_)|_],
+  P=[(X,Y,NumViols,Cost,ViolCost)|_],
   %reverse(P,RP),
-  writeln(P),writeln(' ').
+  length(P,L),
+  write(':'),write(L),write(' '),write(NumViols),write(' '),writeln(ViolCost).
+  %writeln(P),writeln(' ').
 
 %skip the move if it becomes too expensive. This will not  work, as we just end up
 %readding it to the list. Actually, it should still work as we still pop the

@@ -6,7 +6,6 @@
 %MinUnsafeWidth,MaxUnsafeWidth,MinUnsafeHeight,MaxUnsafeHeight,
 %MinUnsafeCost,MaxUnsafeCost,MinUnsafeCenterDist,MaxUnsafeCenterDist,
 %NumUnsafes
-%Max values are actual Max specified - 1
 % These generate a BombList (containing positions of bombs) and UnsafeList
 % (containing positions of Unsafes)
 % We then itterate between minviol and maxviol-1 to see if we can do better
@@ -21,12 +20,12 @@ doFullRun(MinViol,MaxViol):-
   makeEnvironment(1,1,20,20,10,
                   1,5,1,5,
                   1,4,0,6,
-                  8,BombList,UnsafeList),
+                  7,BombList,UnsafeList),
   doFullRun(MinViol,MaxViol,MinViol,BombList,UnsafeList).
 
 doFullRun(_,MaxViol,MaxViol,_,_).
 doFullRun(MinViol,MaxViol,CurViol,BombList,UnsafeList):-
-  run(0,0,CurViol,BombList,UnsafeList,Utility),
+  time(run(0,0,CurViol,BombList,UnsafeList,Utility)),
   write(CurViol),write(':'),writeln(Utility),
   T is CurViol+1,
 doFullRun(MinViol,MaxViol,T,BombList,UnsafeList).
@@ -49,7 +48,7 @@ write(' to '),write(X),write(','),write(Y),
 
 %Note: we try move from XC YC to the new dest as X,Y could not be reached
 doMoves([(XC,YC)|[(_,_)|T]],MaxViols,UnsafeList,CurUtility,Utility) :-
- writeln('failed to achieve a goal'),
+ writeln(' failed to achieve a goal'),
  %Path=[(X,Y,_,Cost,_)|_], 
  TmpUtility is CurUtility, 
  doMoves([(XC,YC)|T],MaxViols,UnsafeList,TmpUtility,Utility).
