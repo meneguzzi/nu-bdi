@@ -1,7 +1,7 @@
 %Our basic unsafe is of the form
 %unsafe(cost,x,y)
 %maximum length of path we consider
-maxLength(20).
+maxLength(50).
 
 moveFromTo(XC,YC,X,Y,MaxViols,UnsafeList,Path) :-
   moveTo(X,Y,[[(XC,YC,0,0,0)]],MaxViols,UnsafeList,Path).

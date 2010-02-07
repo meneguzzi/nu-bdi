@@ -21,6 +21,7 @@ doFullRun(MinViol,MaxViol):-
                   1,5,1,5,
                   1,4,0,6,
                   7,BombList,UnsafeList),
+  writeln('---'),
   doFullRun(MinViol,MaxViol,MinViol,BombList,UnsafeList).
 
 doFullRun(_,MaxViol,MaxViol,_,_).
@@ -28,6 +29,7 @@ doFullRun(MinViol,MaxViol,CurViol,BombList,UnsafeList):-
   time(run(0,0,CurViol,BombList,UnsafeList,Utility)),
   write(CurViol),write(':'),writeln(Utility),
   T is CurViol+1,
+  writeln('---'),
 doFullRun(MinViol,MaxViol,T,BombList,UnsafeList).
 
 run(SX,SY,MaxViols,BombList,UnsafeList,Utility) :-
@@ -38,7 +40,7 @@ doMoves(BL,MaxViols,UnsafeList,U):-doMoves(BL,MaxViols,UnsafeList,0,U).
 
 doMoves([_],_,_,Utility,Utility).
 doMoves([(XC,YC)|[(X,Y)|T]],MaxViols,UnsafeList,CurUtility,Utility) :-
-write('trying to move from '),write(XC),write(','),write(YC),
+write('Moving from '),write(XC),write(','),write(YC),
 write(' to '),write(X),write(','),write(Y),
  moveFromTo(XC,YC,X,Y,MaxViols,UnsafeList,Path),
  Path=[(X,Y,_,Cost,_)|_], 
@@ -48,7 +50,7 @@ write(' to '),write(X),write(','),write(Y),
 
 %Note: we try move from XC YC to the new dest as X,Y could not be reached
 doMoves([(XC,YC)|[(_,_)|T]],MaxViols,UnsafeList,CurUtility,Utility) :-
- writeln(' failed to achieve a goal'),
+ writeln(':Failed to achieve a goal'),
  %Path=[(X,Y,_,Cost,_)|_], 
  TmpUtility is CurUtility, 
  doMoves([(XC,YC)|T],MaxViols,UnsafeList,TmpUtility,Utility).
