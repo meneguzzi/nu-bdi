@@ -11,8 +11,13 @@ import static org.junit.Assert.fail;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
+import jason.asSyntax.Plan;
 import jason.asSyntax.Term;
 import jason.asSyntax.parser.ParseException;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -204,7 +209,7 @@ public class NuAgentTest {
 			//Annotate plans is tested through updateNorms
 			assertTrue(nuAgent.updateNorms());
 			assertEquals(1,nuAgent.getSpecificNorms().size());
-			ConstraintAnnotation annotation = nuAgent.getAnnotationForPlan("testPlan1[source(self)]");
+			ConstraintAnnotation annotation = nuAgent.getAnnotationForPlan("testPlan1");
 			assertNotNull(annotation);
 			assertEquals(new ConstraintAnnotation(ASSyntax.parseFormula("12 > 10")), annotation);
 			
@@ -222,11 +227,42 @@ public class NuAgentTest {
 	}
 
 	/**
-	 * Test method for {@link edu.meneguzzi.nubdi.agent.nu.NuAgent#annotatePlan(jason.asSyntax.Plan)}.
+	 * Test method for {@link edu.meneguzzi.nubdi.agent.nu.NuAgent#annotatePlan(jason.asSyntax.Plan, Collection)}.
 	 */
 	@Test
 	public void testAnnotatePlan() {
-		fail("Not yet implemented");
+		try {
+			assertEquals(0,nuAgent.getSpecificNorms().size());
+			Norm abstractNorm;
+			abstractNorm = new NormImpl(obligation1);
+			assertTrue(nuAgent.addBel(ASSyntax.parseLiteral("activate(12,15)")));
+			//Now we try to activate the norm
+			Iterator<Unifier> activated = null;
+			assertNotNull(activated=abstractNorm.supportsActivation(nuAgent));
+			//There should be only one unifier
+			assertTrue(activated.hasNext());
+			Norm specificNorm = abstractNorm.instantiateNorm(activated.next());
+			assertNotNull(specificNorm);
+			
+			//Getting the plan that I expect to be changed with the annotation
+			Plan plan = nuAgent.getPL().get("testPlan1");
+			assertNotNull(plan);
+			
+			HashSet<Norm> norms = new HashSet<Norm>();
+			norms.add(specificNorm);
+			//Invoking the individual method to annotate a plan
+			ConstraintAnnotation annotation = nuAgent.annotatePlan(plan, norms);
+			assertNotNull(annotation);
+			//And checking if the annotation came out as expected
+			assertEquals(new ConstraintAnnotation(ASSyntax.parseFormula("12 > 10")), annotation);
+			
+		} catch (NuBDIException e) {
+			fail(e.getMessage());
+		} catch (Exception e) {
+			fail(e.getMessage());
+		} 
+		
+		
 	}
 	
 	@Test

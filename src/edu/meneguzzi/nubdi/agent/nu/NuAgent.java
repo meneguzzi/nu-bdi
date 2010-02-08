@@ -20,7 +20,7 @@ import edu.meneguzzi.nubdi.agent.function.defaults.DefaultEventSelectionFunction
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultIntentionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultMessageSelectionFunction;
 import edu.meneguzzi.nubdi.agent.nu.function.NuBeliefUpdateFunction;
-import edu.meneguzzi.nubdi.agent.nu.function.NuOptionSelectionFunction;
+import edu.meneguzzi.nubdi.agent.nu.function.NuOptimalOptionSelectionFunction;
 import edu.meneguzzi.nubdi.exception.NuBDIException;
 import edu.meneguzzi.nubdi.norm.Norm;
 import edu.meneguzzi.nubdi.norm.NormImpl;
@@ -49,7 +49,8 @@ public class NuAgent extends ModularAgent {
 		this.intentionSelectionFunction = new DefaultIntentionSelectionFunction();
 		this.messageSelectionFunction = new DefaultMessageSelectionFunction();
 		//this.optionSelectionFunction = new DefaultOptionSelectionFunction();
-		this.optionSelectionFunction = new NuOptionSelectionFunction();
+		//this.optionSelectionFunction = new NuOptionSelectionFunction();
+		this.optionSelectionFunction = new NuOptimalOptionSelectionFunction();
 		
 		this.abstractNorms = new Hashtable<String, Norm>();
 		this.specificNorms = new Hashtable<String, Norm>();
@@ -122,11 +123,10 @@ public class NuAgent extends ModularAgent {
 	}
 	
 	/**
-	 * Returns a collection of the  specific norms, only for testing purposes 
-	 * hence it is package public
+	 * Returns a collection of the  specific norms.
 	 * @return
 	 */
-	Collection<Norm> getSpecificNorms() {
+	public Collection<Norm> getSpecificNorms() {
 		return this.specificNorms.values();
 	}
 	
@@ -211,21 +211,30 @@ public class NuAgent extends ModularAgent {
 	 * Maybe not the best algorithm for plan annotation, since we regenerate annotations
 	 * at every step
 	 */
-	public void annotatePlans() {
+	protected void annotatePlans() {
 		for(Plan plan : getPL()) {
-			this.annotatePlan(plan);
+			ConstraintAnnotation annotation = this.annotatePlan(plan, specificNorms.values());
+			String planLabel = plan.getLabel().getFunctor();
+			if(annotation != null) {
+				this.planAnnotations.put(planLabel, annotation);
+			} else {
+				this.planAnnotations.remove(planLabel);
+			}
 		}
 	}
 	
 	/**
-	 * Annotates a plan according to algorithm 8 (so far) in the paper
+	 * Annotates a plan according to algorithm <code>annotatePlans</code> from the paper.
+	 * The norms parameter has been included to allow {@link NuOptimalOptionSelectionFunction} 
+	 * to try subsets of the norms in scoring an option
 	 * @param plan
+	 * @param norms TODO
 	 */
-	public void annotatePlan(Plan plan) {
+	public ConstraintAnnotation annotatePlan(Plan plan, Collection<Norm> norms) {
 		ConstraintAnnotation annotation = null;
 		for(PlanBody step = plan.getBody(); step!=null; step=step.getBodyNext()) {
 			logger.finest("Annotating step "+step);
-			for(Norm sNorm : specificNorms.values()) {
+			for(Norm sNorm : norms) {
 				ConstraintAnnotation newAnnotation = null;
 				//TODO Check if we really want this to be Literal, if exceptions occur, maybe we are talking about structure or term
 				if(step.getBodyTerm()!=null && sNorm.inScope(this, null, (Literal)step.getBodyTerm())) {
@@ -249,12 +258,7 @@ public class NuAgent extends ModularAgent {
 				}
 			}
 		}
-		String planLabel = plan.getLabel().toString();
-		if(annotation != null) {
-			this.planAnnotations.put(planLabel, annotation);
-		} else {
-			this.planAnnotations.remove(planLabel);
-		}
+		return annotation;
 	}
 	
 	/**

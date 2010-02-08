@@ -1,6 +1,6 @@
 #!/bin/ruby
 
-for i in 1..10 do
+for i in 1..30 do
   file = File.open("stats"+i.to_s()+".txt","r")
   total=0
   divisor=0
@@ -8,7 +8,7 @@ for i in 1..10 do
     divisor+=1
     total+=line.to_i()
   end
-  average = total/divisor
+  average = Float(total)/(divisor*1000)
   file.close
   file = File.open("stats.txt","a")
   file.puts(""+i.to_s()+" "+average.to_s()+"\n")
@@ -22,7 +22,7 @@ for i in 1..10 do
     divisor+=1
     total+=line.to_i()
   end
-  average = total/divisor
+  average = Float(total)/(divisor*1000)
   file.close
   file = File.open("statsNormative.txt","a")
   file.puts(""+i.to_s()+" "+average.to_s()+"\n")

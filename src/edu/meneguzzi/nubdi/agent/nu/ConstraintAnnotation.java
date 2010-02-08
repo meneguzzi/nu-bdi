@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import edu.meneguzzi.csp.ConstraintSolver;
 import edu.meneguzzi.csp.ConstraintSolverException;
+import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.LogicalFormula;
@@ -40,10 +41,12 @@ public class ConstraintAnnotation {
 
 	/**
 	 * Returns whether or not this annotation is satisfiable given the 
-	 * supplied {@link Unifier}.
+	 * supplied {@link Unifier}. This is a standalone version of the
+	 * check for testing.
 	 * @param unifier
 	 * @return
 	 */
+	@Deprecated
 	public boolean isSatisfiable(Unifier unifier) {
 		ConstraintSolver solver = ConstraintSolver.createConstraintSolver();
 		
@@ -53,6 +56,29 @@ public class ConstraintAnnotation {
 		boolean satisfiable = false;
 		try {
 			satisfiable = solver.satisfiable(formula, null);
+		} catch (ConstraintSolverException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return satisfiable;
+	}
+	
+	/**
+	 * Returns whether or not this annotation is satisfiable given the 
+	 * supplied {@link Unifier}.
+	 * @param unifier
+	 * @return
+	 */
+	public boolean isSatisfiable(Unifier unifier, Agent agent) {
+		ConstraintSolver solver = ConstraintSolver.createConstraintSolver();
+		
+		LogicalFormula formula = (LogicalFormula) constraint.clone();
+		formula.apply(unifier);
+		
+		boolean satisfiable = false;
+		try {
+			satisfiable = solver.satisfiable(formula, agent);
 		} catch (ConstraintSolverException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
