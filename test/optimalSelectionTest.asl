@@ -10,7 +10,7 @@
 @testPlan3
 +event(A,B) : true
    <- action(A,B);
-      +a;
+      action2(A,B);
       action2(A,B).
 
 @testPlan4

@@ -3,17 +3,16 @@
  */
 package edu.meneguzzi.nubdi.agent.nu.function;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import jason.asSemantics.Option;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
-import jason.asSyntax.Trigger.TEOperator;
-import jason.asSyntax.Trigger.TEType;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,9 +74,9 @@ public class NuOptimalOptionSelectionFunctionTest {
 		obligation2 = ASSyntax.parseTerm(obligation2String);
 		prohibition1 = ASSyntax.parseTerm(prohibition1String);
 		
-		activation1 = ASSyntax.parseLiteral("activate(A,B)");
-		activation2 = ASSyntax.parseLiteral("activate2(A,B)");
-		activation3 = ASSyntax.parseLiteral("activate3(A,B)");
+		activation1 = ASSyntax.parseLiteral("activate(15,15)");
+		activation2 = ASSyntax.parseLiteral("activate2(15,15)");
+		activation3 = ASSyntax.parseLiteral("activate3(15,15)");
 		
 		planTrigger = ASSyntax.parseTrigger("+event(20,20)");
 	}
@@ -153,6 +152,7 @@ public class NuOptimalOptionSelectionFunctionTest {
 			nuAgent.addBel(activation3);
 			
 			nuAgent.updateNorms();
+			assertEquals(1,nuAgent.getSpecificNorms().size());
 			
 			List<Option> relevantPlans = nuAgent.getTS().relevantPlans(planTrigger);
 			

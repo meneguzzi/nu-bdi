@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     1 Aug 2010 13:07:15                                                        
+
+     nu-BDI
+     An implementation of nu-BDI based on the Jason Interpreter
+                   
+     Felipe Meneguzzi                                                                
+     ====================================================================== -->
+<project name="nu-BDI" default="jar">
+	<description>
+		An implementation of nu-BDI based on the Jason Interpreter
+    </description>
+
+	<property name="build.dir" value="${basedir}/bin" />
+	<property name="nuBDIJar" value="${basedir}/lib/nu-bdi.jar" />
+
+	<property name="jasonJar" value="${basedir}/lib/jason.jar" />
+	<property name="jasonEnvJar" value="${basedir}/lib/jasonenv.jar" />
+	<property name="peleusJar" value="${basedir}/lib/peleus.jar" />
+	<property name="javagpJar" value="${basedir}/lib/javagp.jar" />
+	<property name="emplanDll" value="${basedir}/lib/emplan.dll" />
+	<property name="jemplanJar" value="${basedir}/lib/jemplan.jar" />
+
+
+
+	<property name="version" value="0.1" />
+	<property name="release" value="1" />
+	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
+	<property name="dist.file" value="${basedir}/nu-bdi-${version}.zip" />
+
+	<path id="project.classpath">
+		<pathelement path="${jasonJar}" />
+		<pathelement path="${jasonEnvJar}" />
+		<pathelement path="${build.dir}" />
+		<pathelement path="${peleusJar}" />
+		<pathelement path="${jasonEnvJar}" />
+		<pathelement path="${javagpJar}" />
+		<pathelement path="${jemplanJar}" />
+	</path>
+
+	<path id="library.path">
+		<pathelement location="./lib" />
+	</path>
+
+	<!-- ================================= 
+          target: run              
+         ================================= -->
+	<target name="run" depends="compile" description="--> Build file for the Normative AgentSpeak(L) project">
+		<property name="project.file" value="IovisNormTest.mas2j" />
+		<java dir="examples/norms" classname="jason.infra.centralised.RunCentralisedMAS" failonerror="true" fork="yes">
+			<classpath refid="project.classpath" />
+			<jvmarg line="-Djava.library.path='${library.path}'" />
+			<arg line="${project.file} ${debug}" />
+		</java>
+	</target>
+
+	<!-- ================================= 
+          target: run-cleaners              
+         ================================= -->
+	<target name="run-cleaners" depends="compile" description="Runs the cleaners example">
+		<property name="project.file" value="Cleaners.mas2j" />
+		<java dir="examples/cleaners" classname="jason.infra.centralised.RunCentralisedMAS" failonerror="true" fork="yes">
+			<classpath refid="project.classpath" />
+			<jvmarg line="-Djava.library.path='${library.path}'" />
+			<arg line="${project.file} ${debug}" />
+		</java>
+	</target>
+
+
+	<!-- ================================= 
+		  target: dist              
+		 ================================= -->
+	<target name="dist" depends="jar,clean" description="Creates a zip for distribution">
+		<delete file="${dist.file}" />
+		<zip destfile="${dist.file}">
+			<fileset dir="${basedir}">
+				<include name="**/*" />
+				<exclude name=".svn*" />
+				<exclude name="${build.dir}" />
+			</fileset>
+
+		</zip>
+	</target>
+
+	<!-- ================================= 
+	      target: jar              
+	     ================================= -->
+	<target name="jar" depends="compile" description="--> Creates the jar file.">
+		<propertyfile file="${dist.properties}">
+			<entry key="version" value="${version}" />
+			<entry key="release" value="${release}" />
+			<entry default="0" key="build" operation="+" type="int" />
+			<entry key="build.date" type="date" value="now" />
+		</propertyfile>
+		<property file="${dist.properties}" />
+
+		<jar jarfile="${nuBDIJar}">
+			<fileset dir="${build.dir}">
+				<include name="org/**/*.class" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="jason.infra.centralised.RunCentralisedMAS" />
+				<attribute name="Classpath" value="jason.jar" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- ================================= 
+	      target: compile              
+	     ================================= -->
+	<target name="compile" depends="init" description="Compiles the sources">
+		<javac srcdir="src" destdir="${build.dir}" debug="true" deprecation="true" optimize="true" nowarn="true" source="1.5" target="1.5">
+			<classpath refid="project.classpath" />
+		</javac>
+	</target>
+
+	<!-- ================================= 
+		  target: clean              
+	     ================================= -->
+	<target name="clean" description="--> description">
+		<delete dir="${build.dir}" />
+	</target>
+
+
+	<!-- - - - - - - - - - - - - - - - - - 
+	      target: init                      
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+	</target>
+</project>
