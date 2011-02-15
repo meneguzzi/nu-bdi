@@ -3,6 +3,7 @@
  */
 package edu.meneguzzi.nubdi.agent;
 
+import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Event;
@@ -11,6 +12,7 @@ import jason.asSemantics.Message;
 import jason.asSemantics.Option;
 import jason.asSyntax.Literal;
 
+import java.security.acl.LastOwnerException;
 import java.util.List;
 import java.util.Queue;
 import java.util.logging.Logger;
@@ -40,19 +42,19 @@ public class ModularAgent extends Agent {
 	
 	protected static final Logger logger = Logger.getLogger(Agent.class.getName());
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected ActionSelectionFunction actionSelectionFunction = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected BeliefRevisionFunction beliefRevisionFunction = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected BeliefUpdateFunction beliefUpdateFunction = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected EventSelectionFunction eventSelectionFunction = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected IntentionSelectionFunction intentionSelectionFunction = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected MessageSelectionFunction messageSelectionFunction = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected OptionSelectionFunction optionSelectionFunction = null;
 	
 	public ModularAgent() {
@@ -64,6 +66,22 @@ public class ModularAgent extends Agent {
 		this.intentionSelectionFunction = new DefaultIntentionSelectionFunction();
 		this.messageSelectionFunction = new DefaultMessageSelectionFunction();
 		this.optionSelectionFunction = new DefaultOptionSelectionFunction();
+	}
+	
+	/* (non-Javadoc)
+	 * @see jason.asSemantics.Agent#initAg(java.lang.String)
+	 */
+	@Override
+	public void initAg(String asSrc) throws JasonException {
+		// TODO Auto-generated method stub
+		super.initAg(asSrc);
+		loadActionDefinitions(asSrc);
+	}
+	
+	private final void loadActionDefinitions(String asSrc) {
+		asSrc = asSrc.substring(0, asSrc.lastIndexOf('.')) + ".act";
+		logger.info("Loading action definitions from "+asSrc);
+		
 	}
 	
 	//AgentSpeak functions, and the corresponding calls to delegate classes

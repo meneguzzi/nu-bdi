@@ -13,6 +13,9 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.kcl.jason.env.action.ExternalAction;
+import org.kcl.jason.env.scripted.ScriptedEnvironment;
+
 import edu.meneguzzi.nubdi.agent.ModularAgent;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultActionSelectionFunction;
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultBeliefRevisionFunction;
@@ -21,10 +24,11 @@ import edu.meneguzzi.nubdi.agent.function.defaults.DefaultIntentionSelectionFunc
 import edu.meneguzzi.nubdi.agent.function.defaults.DefaultMessageSelectionFunction;
 import edu.meneguzzi.nubdi.agent.nu.function.NuBeliefUpdateFunction;
 import edu.meneguzzi.nubdi.agent.nu.function.NuOptimalOptionSelectionFunction;
+import edu.meneguzzi.nubdi.agent.nu.function.NuOptionSelectionFunction;
 import edu.meneguzzi.nubdi.exception.NuBDIException;
 import edu.meneguzzi.nubdi.norm.Norm;
-import edu.meneguzzi.nubdi.norm.NormImpl;
 import edu.meneguzzi.nubdi.norm.Norm.NormType;
+import edu.meneguzzi.nubdi.norm.NormImpl;
 
 /**
  * @author meneguzzi
@@ -38,6 +42,9 @@ public class NuAgent extends ModularAgent {
 	
 	protected Hashtable<String, ConstraintAnnotation> planAnnotations;
 	
+	protected Hashtable<String, ExternalAction<ScriptedEnvironment>> actions;
+	
+	
 	/**
 	 * 
 	 */
@@ -49,8 +56,8 @@ public class NuAgent extends ModularAgent {
 		this.intentionSelectionFunction = new DefaultIntentionSelectionFunction();
 		this.messageSelectionFunction = new DefaultMessageSelectionFunction();
 		//this.optionSelectionFunction = new DefaultOptionSelectionFunction();
-		//this.optionSelectionFunction = new NuOptionSelectionFunction();
-		this.optionSelectionFunction = new NuOptimalOptionSelectionFunction();
+		this.optionSelectionFunction = new NuOptionSelectionFunction();
+		//this.optionSelectionFunction = new NuOptimalOptionSelectionFunction();
 		
 		this.abstractNorms = new Hashtable<String, Norm>();
 		this.specificNorms = new Hashtable<String, Norm>();

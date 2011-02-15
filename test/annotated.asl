@@ -16,8 +16,8 @@ event("Test","Annotation").
        !evacuate(P,X,Y).
 
 +!evacuate(P,X,Y) : at_loc(P,X)
-    <- .puts("Evacuating from location #{X} to location #{Y}").
-       //move(X,Y).
+    <- .puts("Evacuating from location #{X} to location #{Y}");
+       move(X,Y).
 	   
 +norm(Type,Norm,Constraint,Activation,Expiration,Identifier) [source(S)]: true
 	<- edu.meneguzzi.nubdi.action.AddNorm(norm(Type,Norm,Constraint,Activation,Expiration,Identifier));

@@ -1,0 +1,15 @@
+Known Issues
+
+- Constraint Satisfaction
+  * The Jason-based implementation works only when the constraint being checked
+    becomes fully ground given the unifier used to instantiate the plan.
+    In effect this is merely checking if the constraint formula holds for the
+    specific unifier, and the constraint becomes an extended context condition.
+  
+  * The Cream and JaCoP constraint satisfaction do not fully work, as a result
+    of an incomplete translation of a formula into the specific library calls.
+    There is always the issue of dealing with variable types.
+    Whereas integer variables are easy to translate into constraint problems 
+    for these libraries, logic ones are not so straightforward, as we need to
+    map them into Finite Domain Variables, with a potential domain of the 
+    entire Herbrand Base of the agent specification. 

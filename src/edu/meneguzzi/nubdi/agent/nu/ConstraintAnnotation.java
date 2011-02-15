@@ -18,6 +18,10 @@ import jason.asSyntax.parser.ParseException;
  *
  */
 public class ConstraintAnnotation {
+	static {
+		ConstraintSolver.currentSolver = ConstraintSolver.JASON_SOLVER;
+	}
+	
 	
 	protected LogicalFormula constraint;
 	
@@ -45,6 +49,7 @@ public class ConstraintAnnotation {
 	 * check for testing.
 	 * @param unifier
 	 * @return
+	 * @deprecated Use {@link #isSatisfiable(Unifier, Agent)} instead
 	 */
 	@Deprecated
 	public boolean isSatisfiable(Unifier unifier) {

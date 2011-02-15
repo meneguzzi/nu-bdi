@@ -58,7 +58,7 @@
 	<!-- ================================= 
           target: run-cleaners              
          ================================= -->
-	<target name="run-cleaners" depends="compile" description="Runs the cleaners example">
+	<target name="run-bombworld" depends="compile" description="Runs the cleaners example">
 		<property name="project.file" value="Cleaners.mas2j" />
 		<java dir="examples/cleaners" classname="jason.infra.centralised.RunCentralisedMAS" failonerror="true" fork="yes">
 			<classpath refid="project.classpath" />

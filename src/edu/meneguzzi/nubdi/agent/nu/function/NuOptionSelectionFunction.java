@@ -36,8 +36,8 @@ public class NuOptionSelectionFunction implements
 	public Option selectOption(NuAgent agent, List<Option> options) {
 		Option selectedOption = null;
 		for(Option option : options) {
-			Pred label = option.getPlan().getLabel();
-			ConstraintAnnotation constraint = agent.getAnnotationForPlan(label.toString());
+			String label = option.getPlan().getLabel().getFunctor().toString();
+			ConstraintAnnotation constraint = agent.getAnnotationForPlan(label);
 //			if(constraint!=null) {
 //				logger.info("About to check constraint: "+constraint.toString());
 //			}
@@ -48,6 +48,8 @@ public class NuOptionSelectionFunction implements
 				//if(constraint != null) logger.info("Satisfied constraint "+constraint);
 				selectedOption = option;
 				return selectedOption;
+			} else {
+				logger.info("Ignoring option "+option+" --- Unsatisfiable Constraint: "+constraint);
 			}
 			//logger.info("No option selected");
 		}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A script containing test perception. -->
+<script>
+	<step time="0">
+	
+	</step>
+	<step time="1">
+		norm(prohibition, moveTo(C), "C=X", tubeStrike(X), ~tubeStrike(X), norm1).
+	</step>
+	<step time="3">
+		tubeStrike(london).
+	</step>
+		
+	<step time="7">
+		goTo(london).
+	</step>
+	
+	<step time="10" wipe="true">
+		//emergency_level(15,low).
+	</step>
+</script>

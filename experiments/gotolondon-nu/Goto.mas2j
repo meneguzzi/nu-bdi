@@ -1,0 +1,15 @@
+/*
+ *  A test application for the new satisfiable action
+ *
+ */
+
+MAS goto {
+
+    infrastructure: Centralised
+
+	environment: 
+         org.kcl.jason.env.scripted.ScriptedEnvironment("script-goto.xml", "test/act", "goto-domain.txt")
+
+    agents: 
+         gotolondon agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent;
+}

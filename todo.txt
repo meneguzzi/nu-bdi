@@ -1,6 +1,7 @@
 Things to do for this project:
 
-- URGENT Implement negated constraints because of prohibitions, completely bugged!!!!
+- Implement negated constraints because of prohibitions, its completely bugged 
+  (only for the Cream constraint satisfaction, see known issues)
 
 Things to discuss in conference call with everyone:
 
