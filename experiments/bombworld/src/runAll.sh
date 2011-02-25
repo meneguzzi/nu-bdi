@@ -5,4 +5,4 @@ for BLAH in {1..100} ; do
 ./runTestsNormative.sh
 done
 
-ruby genrandom.sh
+ruby aggregateStats.rb

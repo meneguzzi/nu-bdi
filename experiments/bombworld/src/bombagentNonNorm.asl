@@ -2,7 +2,7 @@
 
 !clearBomb.
 
-+!clearBomb:not bomb(_,_,_) 
++!clearBomb : not bomb(_,_,_) 
    <- .puts("All bombs cleared. Yay!");
       endSimulation;
       .puts("Finished Simulation").

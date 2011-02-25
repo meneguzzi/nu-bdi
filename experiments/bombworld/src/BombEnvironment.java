@@ -7,8 +7,6 @@ import jason.asSyntax.Term;
 import jason.asSyntax.parser.ParseException;
 import jason.environment.Environment;
 import jason.infra.centralised.RunCentralisedMAS;
-import jason.runtime.RuntimeServicesInfraTier;
-import jason.stdlib.stopMAS;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -384,6 +382,7 @@ public class BombEnvironment extends Environment {
 			FileWriter writer = new FileWriter(filename,true);
 			//Changed to get a crapload of numbers overnight
 			//writer.write(""+numBombs+" "+startingTime+System.getProperty("line.separator"));
+			logger.info("Writing stats to "+filename);
 			writer.write(""+startingTime+System.getProperty("line.separator"));
 			writer.flush();
 		} catch (IOException e) {

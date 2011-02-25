@@ -1,6 +1,16 @@
 import java.io.FileWriter;
 import java.util.*;
 
+/**
+ * A (quick and dirty) program to generate BombWorld domains for testing with nu-BDI.
+ * Parameters are:
+ * 	<ul>
+ * 		<li>the number of bombs to be defused in the domain; and</li>
+ * 		<li>and the name of the file where the domain properties are to be stored.</li>
+ * </ul>
+ * @author meneguzzi
+ *
+ */
 public class MakeBombWorld {
 
 	private static final int TIME_STEP = 750;
@@ -21,10 +31,7 @@ public class MakeBombWorld {
 			p.setProperty("unsafeChanges", "" + numberOfBombs);
 			p.setProperty("agent", "p(4,4)");
 			p.setProperty("unsafes", "[u(5,4)]");
-			p
-					.setProperty(
-							"unsafesNorm",
-							"norm(prohibition, move(D), X==5 & Y==4, activateNorm0, deactivateNorm0, noUnsafe0)");
+			p.setProperty("unsafesNorm", "norm(prohibition, move(D), X==5 & Y==4, activateNorm0, deactivateNorm0, noUnsafe0)");
 
 			HashSet<String> conf = new HashSet<String>();// records position of
 															// unsafes
@@ -105,9 +112,7 @@ public class MakeBombWorld {
 			bombString = bombString + bombPos.get(numberOfBombs - 1) + "]";
 			p.setProperty("bombs", bombString);
 
-			p
-					.store(new FileWriter(args[1] + numberOfBombs
-							+ ".properties"), "");
+			p.store(new FileWriter(args[1] + numberOfBombs+ ".properties"), "");
 		}
 	}
 }
