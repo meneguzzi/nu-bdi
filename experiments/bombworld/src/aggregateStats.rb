@@ -1,6 +1,6 @@
 #!/bin/ruby
 
-for i in 1..30 do
+for i in 1..40 do
   file = File.open("stats"+i.to_s()+".txt","r")
   total=0
   divisor=0

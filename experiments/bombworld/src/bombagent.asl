@@ -1,8 +1,8 @@
-//Agent with plans that rely on norms to work
+//Agent with plans that avoid unsafes without norms
 
 !clearBomb.
 
-+!clearBomb:not bomb(_,_,_) 
++!clearBomb : not bomb(_,_,_) 
    <- .puts("All bombs cleared. Yay!");
       endSimulation;
       .puts("Finished Simulation").
@@ -128,11 +128,11 @@
 -!doMove([m(_,X,Y,D)|T]) : agent(bombagent,XS,YS) //true
   <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}, replanning.");
      !clearCache;
-     +unsafe(X,Y);
-     !moveToDestination([m(_X,Y,D)|T]).
+     //+unsafe(X,Y);
+     !moveToDestination([m(_,X,Y,D)|T]).
 
 @planMove
-+!doMove([m(_,X,Y,D)|T])//: not unsafe(X,Y)
++!doMove([m(_,X,Y,D)|T]): not unsafe(X,Y)
   <- .puts("Moving #{D} to #{X},#{Y}.");
      move(D);
      !doMove(T).

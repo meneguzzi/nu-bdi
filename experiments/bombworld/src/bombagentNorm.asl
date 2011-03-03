@@ -129,7 +129,7 @@
   <- .puts("Found an unsafe square at #{X},#{Y} moving #{D}, replanning.");
      !clearCache;
      +unsafe(X,Y);
-     !moveToDestination([m(_X,Y,D)|T]).
+     !moveToDestination([m(_,X,Y,D)|T]).
 
 @planMove
 +!doMove([m(_,X,Y,D)|T])//: not unsafe(X,Y)

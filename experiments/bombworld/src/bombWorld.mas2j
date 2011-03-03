@@ -1,6 +1,6 @@
-MAS bombworld {
-    infrastructure: Centralised
-    environment: BombEnvironment(bombworld.properties)
-    agents: bombagent; 
+MAS bombworldt { 
+ infrastructure: Centralised 
+ environment: BombEnvironment(bombworld11.properties,norms) 
+ agents: bombagent agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent; 
 }
 
