@@ -1,0 +1,9 @@
+nu-BDI is an interpreter for a normative agent that uses constraints
+on plan instantiations to enforce normative stipulations of obligations
+and prohibitions. It is implemented as an extension of the popular
+Jason interpreter. 
+First release: March 2011.
+nu-BDI is distributed under LGPL (see file LICENSE).
+
+Java 1.5 is required to run this application, it is available
+at http://java.sun.com.

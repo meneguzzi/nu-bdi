@@ -13,30 +13,31 @@
     </description>
 
 	<property name="build.dir" value="${basedir}/bin" />
-	<property name="nuBDIJar" value="${basedir}/lib/nu-bdi.jar" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="nuBDIJar" value="${lib.dir}/nu-bdi.jar" />
 
-	<property name="jasonJar" value="${basedir}/lib/jason.jar" />
-	<property name="jasonEnvJar" value="${basedir}/lib/jasonenv.jar" />
-	<property name="peleusJar" value="${basedir}/lib/peleus.jar" />
-	<property name="javagpJar" value="${basedir}/lib/javagp.jar" />
-	<property name="emplanDll" value="${basedir}/lib/emplan.dll" />
-	<property name="jemplanJar" value="${basedir}/lib/jemplan.jar" />
+	<property name="jason.jar" value="${lib.dir}/jason.jar" />
+	<property name="jasonenv.jar" value="${lib.dir}/jasonenv.jar" />
+	<property name="jason-csp.jar" value="${lib.dir}/jason-csp.jar" />
+	<property name="peleus.jar" value="${lib.dir}/peleus.jar" />
+	<property name="javagp.jar" value="${lib.dir}/javagp.jar" />
+	<property name="emplan.dll" value="${lib.dir}/emplan.dll" />
+	<property name="jemplan.jar" value="${lib.dir}/jemplan.jar" />
 
-
-
-	<property name="version" value="0.1" />
+	<property name="version" value="0.2" />
 	<property name="release" value="1" />
 	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
+	<property name="dist.dir" value="${basedir}/dist"/>
 	<property name="dist.file" value="${basedir}/nu-bdi-${version}.zip" />
 
 	<path id="project.classpath">
-		<pathelement path="${jasonJar}" />
-		<pathelement path="${jasonEnvJar}" />
+		<pathelement path="${jason.jar}" />
+		<pathelement path="${jasonenv.jar}" />
 		<pathelement path="${build.dir}" />
-		<pathelement path="${peleusJar}" />
-		<pathelement path="${jasonEnvJar}" />
-		<pathelement path="${javagpJar}" />
-		<pathelement path="${jemplanJar}" />
+		<pathelement path="${peleus.jar}" />
+		<pathelement path="${jason-csp.jar}" />
+		<pathelement path="${javagp.jar}" />
+		<pathelement path="${jemplan.jar}" />
 	</path>
 
 	<path id="library.path">
@@ -72,12 +73,31 @@
 		  target: dist              
 		 ================================= -->
 	<target name="dist" depends="jar,clean" description="Creates a zip for distribution">
-		<delete file="${dist.file}" />
+		<echo message="Generating nu-BDI ${version}.${release}" />
+		
+		<delete failonerror="no" includeEmptyDirs="true">
+            <fileset dir="${dist.dir}" />
+		</delete>
+		<mkdir dir="${dist.dir}" />
+        <copy todir="${dist.dir}">
+           <fileset dir="${basedir}" includes="LICENSE" />
+           <fileset dir="${basedir}" includes="README" />
+           <fileset dir="${basedir}" includes="*.txt" excludes="todo.txt"/>
+           <fileset dir="${basedir}" includes="build.xml" />
+
+           <fileset dir="${basedir}" includes="bin/*"/>
+           <fileset dir="${basedir}" includes="doc/**/*" />
+           <fileset dir="${basedir}" includes="experiments/**/*" />
+           <fileset dir="${basedir}" includes="test/**/*" />
+           <fileset dir="${basedir}" includes="lib/**/*" />
+           <fileset dir="${basedir}" includes="src/**/*" />
+		 </copy>
+		
+		<delete file="${dist.file}" failonerror="false" />
 		<zip destfile="${dist.file}">
-			<fileset dir="${basedir}">
+			<fileset dir="${dist.dir}">
 				<include name="**/*" />
 				<exclude name=".svn*" />
-				<exclude name="${build.dir}" />
 			</fileset>
 
 		</zip>
