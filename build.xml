@@ -25,10 +25,10 @@
 	<property name="jemplan.jar" value="${lib.dir}/jemplan.jar" />
 
 	<property name="version" value="0.2" />
-	<property name="release" value="1" />
+	<property name="release" value="2" />
 	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
-	<property name="dist.dir" value="${basedir}/dist"/>
-	<property name="dist.file" value="${basedir}/nu-bdi-${version}.zip" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="dist.file" value="${basedir}/nu-bdi-${version}.${release}.zip" />
 
 	<path id="project.classpath">
 		<pathelement path="${jason.jar}" />
@@ -74,32 +74,31 @@
 		 ================================= -->
 	<target name="dist" depends="jar,clean" description="Creates a zip for distribution">
 		<echo message="Generating nu-BDI ${version}.${release}" />
-		
+
 		<delete failonerror="no" includeEmptyDirs="true">
-            <fileset dir="${dist.dir}" />
+			<fileset dir="${dist.dir}" />
 		</delete>
 		<mkdir dir="${dist.dir}" />
-        <copy todir="${dist.dir}">
-           <fileset dir="${basedir}" includes="LICENSE" />
-           <fileset dir="${basedir}" includes="README" />
-           <fileset dir="${basedir}" includes="*.txt" excludes="todo.txt"/>
-           <fileset dir="${basedir}" includes="build.xml" />
+		<copy todir="${dist.dir}">
+			<fileset dir="${basedir}" includes="LICENSE" />
+			<fileset dir="${basedir}" includes="README" />
+			<fileset dir="${basedir}" includes="*.txt" excludes="todo.txt" />
+			<fileset dir="${basedir}" includes="build.xml" />
 
-           <fileset dir="${basedir}" includes="bin/*"/>
-           <fileset dir="${basedir}" includes="doc/**/*" />
-           <fileset dir="${basedir}" includes="experiments/**/*" />
-           <fileset dir="${basedir}" includes="test/**/*" />
-           <fileset dir="${basedir}" includes="lib/**/*" />
-           <fileset dir="${basedir}" includes="src/**/*" />
-		 </copy>
-		
+			<fileset dir="${basedir}" includes="bin/*" />
+			<fileset dir="${basedir}" includes="doc/**/*" />
+			<fileset dir="${basedir}" includes="experiments/**/*" />
+			<fileset dir="${basedir}" includes="test/**/*" />
+			<fileset dir="${basedir}" includes="lib/**/*" />
+			<fileset dir="${basedir}" includes="src/**/*" />
+		</copy>
+
 		<delete file="${dist.file}" failonerror="false" />
 		<zip destfile="${dist.file}">
 			<fileset dir="${dist.dir}">
 				<include name="**/*" />
 				<exclude name=".svn*" />
 			</fileset>
-
 		</zip>
 	</target>
 
@@ -140,6 +139,8 @@
 	     ================================= -->
 	<target name="clean" description="--> description">
 		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${dist.file}"/>
 	</target>
 
 

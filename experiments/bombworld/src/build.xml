@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Mar 8, 2011 6:52:51 PM                                                        
+
+     Bombworld-Experiment    
+     Sources for the Bombworld experiment
+                   
+     meneguzzi                                                                
+     ====================================================================== -->
+<project name="Bombworld-Experiment" default="compile">
+	<description>
+            Sources for the Bombworld experiment
+    </description>
+
+	<property name="nubdi.dir" value="${basedir}/../../.." />
+	<property name="build.dir" value="${nubdi.dir}/bin" />
+	<property name="lib.dir" value="${nubdi.dir}/lib" />
+	<property name="nuBDIJar" value="${lib.dir}/nu-bdi.jar" />
+
+	<property name="jason.jar" value="${lib.dir}/jason.jar" />
+	<property name="jasonenv.jar" value="${lib.dir}/jasonenv.jar" />
+	<property name="jason-csp.jar" value="${lib.dir}/jason-csp.jar" />
+	<property name="peleus.jar" value="${lib.dir}/peleus.jar" />
+	<property name="javagp.jar" value="${lib.dir}/javagp.jar" />
+	<property name="emplan.dll" value="${lib.dir}/emplan.dll" />
+	<property name="jemplan.jar" value="${lib.dir}/jemplan.jar" />
+
+	<property name="version" value="1.0" />
+	<property name="release" value="1" />
+	<property name="dist.properties" value="${build.dir}/dist.properties" />
+
+	<path id="project.classpath">
+		<pathelement path="${jason.jar}" />
+		<pathelement path="${jasonenv.jar}" />
+		<pathelement path="${build.dir}" />
+		<pathelement path="${peleus.jar}" />
+		<pathelement path="${jason-csp.jar}" />
+		<pathelement path="${javagp.jar}" />
+		<pathelement path="${jemplan.jar}" />
+	</path>
+
+	<path id="library.path">
+		<pathelement location="${lib.dir}" />
+	</path>
+
+	<!-- ================================= 
+          target: build              
+         ================================= -->
+	<target name="compile" depends="init" description="Sources for the Bombworld experiment">
+		<javac srcdir="." destdir="${build.dir}" debug="true" deprecation="true" optimize="true" nowarn="true" source="1.5" target="1.5">
+			<classpath refid="project.classpath" />
+		</javac>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: init                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+</project>
