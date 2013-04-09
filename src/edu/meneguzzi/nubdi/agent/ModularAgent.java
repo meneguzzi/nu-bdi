@@ -12,7 +12,6 @@ import jason.asSemantics.Message;
 import jason.asSemantics.Option;
 import jason.asSyntax.Literal;
 
-import java.security.acl.LastOwnerException;
 import java.util.List;
 import java.util.Queue;
 import java.util.logging.Logger;

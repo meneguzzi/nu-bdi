@@ -1,0 +1,60 @@
+;;; This file contains a SHOP domain representation of the rescue scenario for the nu-BDI paper
+
+
+;;; ------------------------------------------------------------------------
+;;; Declare all the data
+;;; ------------------------------------------------------------------------
+
+(defdomain rescue
+  (
+    ;; basic operators
+
+    (:operator (!isolate ?x)
+               ((area ?x))
+               ((safe ?x))
+               ((isolated ?x))
+	)
+
+    (:operator (!evacuate ?x ?y)
+               ((area ?x) (area ?y) (highRisk ?x) (not (highRisk ?y)))
+               nil;((forall (?p) ((at ?p ?x)) ((at ?p ?x)) ) );D
+               ((forall (?p) ((at ?p ?x)) ((at ?p ?y)) ) );A
+    )
+
+    (:operator (!reroute ?x ?y)
+               () ; P
+               () ; D
+               () ; A
+    )
+
+    ;; Find those blocks which don't need to be moved.
+    ;; This is called once in the beginning of the process.
+    ;; Blocks in their final positions are distinguished with a
+    ;; dont-move predicate in the world state
+    (:method (level ?x medium)
+             ;((highRisk ?x))
+			 ((area ?x) (area ?y) (area ?z) 
+			  (highRisk ?x) (not (highRisk ?y)) (not (highRisk ?z)) (not (same ?y ?z))
+			 )
+             ((!isolate ?x) (!evacuate ?x ?y) (!reroute ?x ?z))
+    )
+	
+	; (:method (checkNorms)
+; 			()
+; 			
+; 	)
+
+    ;; state axioms
+
+    (:- (same ?x ?x) nil)
+	
+	(:- (forbidden (evacuate ?x ?y)) 
+		(not (safe ?y))
+		)
+	
+	(:- (obliged (reroute ?x ?z)) 
+		((not (safe ?x)) );TODO Add restriction that X+1 <= Z  <= X+3
+		)
+ 
+  )
+)

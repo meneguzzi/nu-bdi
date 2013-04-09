@@ -1,0 +1,22 @@
+(defproblem problem rescue
+ (
+  (area a)
+  (area b)
+  (area c)
+  (area d)
+  (highRisk a)
+  (highRisk b)
+  ;(not (highRisk c))
+  ;(not (highRisk d))
+  (person john)
+  (person mary)
+  (person susan)
+  (at john a)
+  (at mary a)
+  (at susan a)
+ )
+
+ (
+   (level a medium)
+ )
+)
