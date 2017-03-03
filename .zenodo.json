@@ -32,6 +32,22 @@
             {
                 "affiliation": "PUCRS", 
                 "name": "Felipe Meneguzzi"
+            },
+            {
+                "affiliation": "University of Aberdeen", 
+                "name": "Nir Oren"
+            },
+            {
+                "affiliation": "University of Aberdeen", 
+                "name": "Wamberto Vasconcelos"
+            },
+            {
+                "affiliation": "King's College London", 
+                "name": "Odinaldo Rodrigues"
+            },
+            {
+                "affiliation": "King's College London", 
+                "name": "Michael Luck"
             }
         ], 
         "access_right": "open", 
