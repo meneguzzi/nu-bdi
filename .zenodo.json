@@ -1,0 +1,46 @@
+{
+    "doi": "10.5281/zenodo.345156", 
+    "links": {
+        "doi": "https://doi.org/10.5281/zenodo.345156", 
+        "badge": "https://zenodo.org/badge/doi/10.5281/zenodo.345156.svg"
+    }, 
+    "created": "2017-03-02T18:50:18.040800+00:00", 
+    "title": "meneguzzi/nu-bdi: First release of nu-BDI", 
+    "modified": "2017-03-02T18:50:20.418994+00:00", 
+    "submitted": true, 
+    "record_id": 345156, 
+    "state": "done", 
+    "doi_url": "https://doi.org/10.5281/zenodo.345156", 
+    "owner": 15320, 
+    "metadata": {
+        "doi": "10.5281/zenodo.345156", 
+        "description": "nu-BDI is an interpreter for a normative agent that uses constraints on plan instantiations to enforce normative stipulations of obligations and prohibitions.", 
+        "license": "other-open", 
+        "title": "meneguzzi/nu-bdi: First release of nu-BDI", 
+        "upload_type": "software", 
+        "prereserve_doi": {
+            "doi": "10.5281/zenodo.345156", 
+            "recid": 345156
+        }, 
+        "communities": [
+            {
+                "identifier": "zenodo"
+            }
+        ], 
+        "publication_date": "2017-03-02", 
+        "creators": [
+            {
+                "affiliation": "PUCRS", 
+                "name": "Felipe Meneguzzi"
+            }
+        ], 
+        "access_right": "open", 
+        "related_identifiers": [
+            {
+                "scheme": "url", 
+                "identifier": "https://github.com/meneguzzi/nu-bdi/tree/alpha1", 
+                "relation": "isSupplementTo"
+            }
+        ]
+    }
+}
