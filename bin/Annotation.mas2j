@@ -1,0 +1,15 @@
+/*
+ *  A test application for the new satisfiable action
+ *
+ */
+
+MAS annotation {
+
+    infrastructure: Centralised
+
+	environment: 
+         org.kcl.jason.env.scripted.ScriptedEnvironment("script.xml", "test/act")
+
+    agents: 
+         annotated agentClass edu.meneguzzi.nubdi.agent.nu.NuAgent;
+}
