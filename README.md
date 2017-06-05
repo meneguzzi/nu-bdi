@@ -1,6 +1,4 @@
-# Nu-BDI
-
-[![DOI](https://zenodo.org/badge/83712456.svg)](https://zenodo.org/badge/latestdoi/83712456)
+# Nu-BDI [![DOI](https://zenodo.org/badge/83712456.svg)](https://zenodo.org/badge/latestdoi/83712456)
 
 nu-BDI is an interpreter for a normative agent that uses constraints
 on plan instantiations to enforce normative stipulations of obligations
